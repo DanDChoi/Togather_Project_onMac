@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+   <typeAliases>
+   		<!-- Gathering -->
+	   <typeAlias alias="Gathering" type="team1.togather.domain.Gathering"/>
+	   <typeAlias alias="GatheringCriteria" type="team1.togather.domain.GatheringCriteria"/>
+	   <typeAlias alias="GatheringPage" type="team1.togather.domain.GatheringPage"/>
+	   <typeAlias alias="MemInGathering" type="team1.togather.domain.MemInGathering"/>
+	   <!-- GroupTab -->
+	   <typeAlias alias="GroupTab" type="team1.togather.domain.GroupTab"/>
+	   <typeAlias alias="GroupTabBoard" type="team1.togather.domain.GroupTabBoard"/>
+	   <typeAlias alias="MemInGroup" type="team1.togather.domain.MemInGroup"/>
+	   <!-- Member -->
+	   <typeAlias alias="Member" type="team1.togather.domain.Member"/>
+	   <!-- Board -->
+	   <typeAlias alias="Board" type="team1.togather.domain.Board"/>
+	   <typeAlias alias="BoardCriteria" type="team1.togather.domain.BoardCriteria"/>
+	   <!-- Others -->
+	   <typeAlias alias="Reply" type="team1.togather.domain.Reply"/>
+	   <typeAlias alias="WishList" type="team1.togather.domain.WishList"/>
+	   <typeAlias alias="Block" type="team1.togather.domain.Block"/>
+	   <typeAlias alias="QA" type="team1.togather.domain.QandA"/>
+	   <typeAlias alias="QaReply" type="team1.togather.domain.QaReply"/>
+   </typeAliases>
+   <!-- 
+   <mappers>
+        <mapper resource="dan/md/mapper/AddressMapper.xml"/>
+        <mapper resource="dan/md/mapper/BoardMapper.xml"/>
+        <mapper resource="dan/md/mapper/AddressAjaxMapper.xml"/>
+   </mappers>
+	생략가능 (저절로 읽어들임)-->
+</configuration>

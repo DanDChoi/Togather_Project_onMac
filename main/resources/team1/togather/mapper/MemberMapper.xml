@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team1.togather.mapper.MemberMapper">
+	
+	<select id="joincheck" resultType="int" parameterType="String">
+		select count(*) from member where phone =#{phone}
+	</select>
+	
+	<select id="joincheck2" resultType="int" parameterType="String">
+		select count(*) from member where email =#{email}
+	</select>
+	
+	<select id="logincheck"  resultType="Member" parameterType="String">
+		select * from member where phone =#{phone} 
+	</select>
+	
+	<select id="memberCount"  resultType="long" >
+		select count(*) from member 
+	</select>
+	
+	<select id="kakaologincheck"  resultType="int" parameterType="String">
+		select count(*) from member where email =#{email} 
+	</select>
+	
+	<select id="kakaologin"  resultType="Member" parameterType="String">
+		select * from member where email =#{email} 
+	</select>
+	<!-- 그룹인포에서 멤버이름눌렀을때 회원정보 가져오기 -->
+	<select id="memberInfo"  resultType="Member" parameterType="long">
+		select * from member where mnum=(select mnum from MEM_IN_GROUP where gseq=#{gseq} and mnum=#{mnum}) 
+	</select>
+	<!-- 그룹인포에서 멤버이름눌렀을때 내가 차단한 회원번호 가져오기 -->
+	<select id="blockedNumList"   parameterType="Block">
+		select blocked from block where blocking=#{blocking} 
+	</select>
+	<!-- 그룹인포에서 멤버이름눌렀을때 내가 차단한 회원이름 가져오기 -->
+	<select id="blockedNameList"  resultType="String" parameterType="Long">
+		select mname from member where mnum=any(select blocked from block where blocking=#{mnum}) 
+	</select>
+	<!-- 차단하기 -->
+	<insert id="blocking" parameterType="Block">
+		insert into block values(BLOCK_SEQ.nextval,#{blocking},#{blocked})
+	</insert>
+	<!-- 차단해제하기 -->
+	<delete id="blockingCancel" parameterType="Block">
+		delete block where blocking=#{blocking} and blocked=#{blocked}
+	</delete>
+	<insert id="join" parameterType="String" >
+	     insert into MEMBER values(
+	     MEMBER_SEQ.nextval,#{maddr}, #{pfr_loc},#{mname},
+	     #{gender},#{birth},#{pwd},#{email},#{phone},#{category},default)
+	</insert>
+</mapper>
+
