@@ -44,14 +44,17 @@
     <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
     <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
     <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+    <!-- Template Main CSS File -->
+    <link href="/assets/css/style.css" rel="stylesheet" />
+    
     <!-- alert -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-     <!-- alert -->
+    
+    <!-- JQuery -->
 	<script type="text/javascript" language="javascript" 
 		     src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <!-- Template Main CSS File -->
-    <link href="/assets/css/style.css" rel="stylesheet" />
+    
     <script type="text/javascript">
     
     function groupJoin(){
@@ -171,36 +174,7 @@
 	   				});  
 	   			});
     	}
-    	
-    	function gatheringCreate(){
-   				if(${gatheringCountInGroup} >= 5){
-   					Swal.fire({
-   						title: '정모는 5개까지만 개설 가능합니다.',
-   						icon: 'warning',
-   						showCancelButton: false,
-   						confirmButtonColor: '#3085d6',
-   						confirmButtonText: 'Yes'
-   					});
-   					return false;
-   				}else{
-   				var mnum = ${m.mnum};
-   	  			var gseq = ${groupInfo.gseq};
-   	  			var result = {"mnum":mnum,"gseq":gseq};
-   		  		$(function(){
-     				$.ajax({
-   	   					url: "gatheringCreate.json",
-   	   					type: "POST",
-   	   					data: result,
-   	   					success: function(data){
-   	   					location="../gathering/gatheringCreate.do?gseq=${groupInfo.gseq}&mnum=${m.mnum}";
-   	   					}
-     				});
-   		  		});
-   		  		
-   			  }  			  
-   			});
-       	}
-    	
+  
     	function groupUpdate(){
     		location="groupUpdate.do?gseq=${groupInfo.gseq}";
     	}
@@ -208,7 +182,7 @@
     	function groupDelete(){
     		location="groupDelete.do?gseq=${groupInfo.gseq}";
     	}
-    	
+
     	function memberInfo(index){
     		var arr = new Array();
     		<c:forEach var="memInGroupName" items="${memInGroupName}">	              
@@ -220,6 +194,38 @@
         	  "../member/memberInfo?mnum="+arr[index].mnum+"&gseq=${groupInfo.gseq}", "memberInfo", 
         	   "width=1000, height=900, top=100, left=100");
         }
+    </script>
+    <script type="text/javascript">
+	    function gatheringCreateCheck(){
+  			var gseq = ${groupInfo.gseq};
+  			var result = {"gseq":gseq};
+  			$(function(){
+ 				$.ajax({
+   					url: "gatheringCreateCheck.json",
+   					type: "POST",
+   					data: result,
+   					success: function(data){
+	   					if(data == 0){
+							Swal.fire({
+								title: '정모는 5개까지만 개설 가능합니다.',
+								icon: 'warning',
+								showCancelButton: false,
+								confirmButtonColor: '#3085d6',
+								confirmButtonText: 'Yes'
+							});
+						}else{
+							gatheringCreate();
+						}
+   					}
+   				});  
+   			});
+		}
+	           	
+    	function gatheringCreate(){
+    		location="../gathering/gatheringCreate.do?gseq=${groupInfo.gseq}&mnum=${m.mnum}";
+    	}
+    	 
+    
     </script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script>
@@ -458,7 +464,7 @@
                 <button
                   type="button"
                   class="btn btn-outline-success"
-                  onclick="location.href='javscript:gatheringCreate()'"
+                  onclick="location.href='javascript:gatheringCreateCheck()'"
                 >
                  	정모만들기
                 </button>

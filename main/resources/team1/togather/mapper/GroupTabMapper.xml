@@ -76,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			delete GATHERING where mnum=#{mnum}
 		</delete>
 		<!-- 모임info 안에 보여지는 정모 갯수 -->
-		<select id="gatheringCountInGroup" resultType="long">
+		<select id="gatheringCountInGroup" resultType="Long">
 			select count(*) from GATHERING where gseq=#{gseq}
 		</select>
 	</mapper>

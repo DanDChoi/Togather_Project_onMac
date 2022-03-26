@@ -32,6 +32,6 @@ public interface GroupTabMapper {
 	
 	//03.26 대현추가
 	void quitGroupDeleteGathering(long mnum);	
-	long gatheringCountInGroup(long gseq);
+	Long gatheringCountInGroup(long gseq);
 }
 

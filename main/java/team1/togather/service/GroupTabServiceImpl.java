@@ -118,7 +118,7 @@ public class GroupTabServiceImpl implements GroupTabService {
 		groupTabMapper.quitGroupDeleteGathering(mnum);
 	}
 	@Override
-	public long gatheringCountInGroup(long gseq) {
+	public Long gatheringCountInGroup(long gseq) {
 		return groupTabMapper.gatheringCountInGroup(gseq);
 	}
 
