@@ -372,6 +372,7 @@
                 <p>${groupMemberCount}/${groupInfo.limit}</p>
               </div>
               <!-- 정모목록 부분-->
+              <c:if test="${memInGroupCheck ne null}">
               <div class="accordion acoordion-flush" id="accordionExample">
                 <div class="accordion-item">
                   <h2 class="accordion-header" id="headingOne">
@@ -396,7 +397,7 @@
                       <a href="../gathering/gatheringInfo.do?ga_seq=${gathering.ga_seq}&mnum=${m.mnum}">${gathering.ga_name}</a>
                     </div>
                    </c:forEach>
-                   <div class="acoordion-body">
+                   <!-- <div class="acoordion-body">
                    <nav aria-label="Page navigation example">
 					  <ul class="pagination" style="justify-content:center">
 					    <li class="page-item">
@@ -410,11 +411,12 @@
 					      </a>
 					    </li>
 					  </ul>
-					</nav>
-                   </div>
+					</nav> 
+                   </div>-->
                   </div>
                 </div>
               </div>
+              </c:if>
               <!--정모목록 끝-->
               <div
                 class="course-info d-flex justify-content-between align-items-center"
