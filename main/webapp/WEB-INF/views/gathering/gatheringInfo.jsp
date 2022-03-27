@@ -118,9 +118,9 @@
 	   					data: result,
 	   					success: function(data){
 	   						if(data == 0){
-	   loacation.href="../groupTab/groupInfo.do?gseq=${gatheringInfo.gseq}&mnum=${m.mnum}";
+	   location.href="../groupTab/groupInfo.do?gseq=${gatheringInfo.gseq}&mnum=${m.mnum}";
 	   						}else{
-	   							loaction.reload();
+	   							location.reload();
 	   						}
 	   					}
     				}); 

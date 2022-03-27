@@ -125,7 +125,7 @@ public class GroupTabController {
 			}
 		}
 	}
-	
+	//03.26 대현추가
 	@PostMapping("gatheringCreateCheck")
 	@ResponseBody
 	public Long gatheringCreateCheck(long gseq) {
