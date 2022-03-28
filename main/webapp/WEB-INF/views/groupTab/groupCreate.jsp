@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=utf-8" session="false" %>
+<%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
@@ -47,11 +47,14 @@
 
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet" />
-    
+    <script>
+		window.history.forward();
+	 	function noBack(){window.history.forward();}
+	</script>
     
   </head>
 
-  <body>
+  <body onload="noBack();" onpageshow="if(event.persisted) noBack();" onunload="">
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
       <div class="container d-flex align-items-center">
@@ -63,7 +66,7 @@
           <ul>
             <li><a class="active" href="../">Home</a></li>
             <li><a href="about.html">About</a></li>
-            <li><a href="myGroup.html">나의 모임</a></li>
+            <li><a href="myGroup.do?mnum=${m.mnum }">나의 모임</a></li>
             <!--로그인시에만 보이게 하기-->
             <li><a href="boardMain.html">게시판</a></li>
             <li>
@@ -82,19 +85,30 @@
               <ul>
                 <li><a href="notice.html">공지사항</a></li>
                 <li><a href="FAQ.html">자주묻는 질문</a></li>
-                <li><a href="QA.html">Q&A</a></li>
+                <li><a href="qa">Q&A</a></li>
                 <li><a href="contact.html">Contact</a></li>
               </ul>
             </li>
-            <li><a href="login.html">로그인</a></li>
+            <c:choose>
+           		<c:when test="${m eq null}">
+            		<li><a href="member/login.do">로그인 ${sessionScope.m} </a></li>
+        		</c:when>
+          		<c:otherwise>
+            		<li><a href="javascript:void(0);" onclick="signout();">로그아웃</a></li>
+            	</c:otherwise>
+         	</c:choose>
           </ul>
           <i class="bi bi-list mobile-nav-toggle"></i>
         </nav>
         <!-- .navbar -->
-
-        <!--로그인전에는 회원가입만 보이고 로그인하면 모임만들기만 보이게 하는건 어떤지??-->
-        <a href="join.html" class="get-started-btn">회원가입</a>
-        <a href="groupCreate.do" class="get-started-btn">모임만들기</a>
+		<c:choose>
+           		<c:when test="${m eq null}">
+		        	<a href="member/joinform.do" class="get-started-btn">회원가입</a>
+		        </c:when>
+		        <c:otherwise>
+        			<a href="groupTab/groupCreate.do" class="get-started-btn">모임만들기</a>
+        		</c:otherwise>
+         </c:choose>
       </div>
     </header>
     <!-- End Header -->
@@ -120,7 +134,7 @@
                   <div class="row justify-content-center">
                     <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                       <!--모임지역/이름/모임소개/관심사/정원/모임사진-->
-                      <form class="mx-1 mx-md-4" method="post" action="groupCreate.do" enctype="multipart/form-data">
+                      <form class="mx-1 mx-md-4" method="post" action="groupCreate.do?mnum=${m.mnum }" enctype="multipart/form-data">
                         <div class="d-flex flex-row align-items-center mb-0">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-2">
@@ -235,7 +249,7 @@
                               type="file"
                               id="form3Example1c"
                               class="form-control"
-                              name="fname"
+                              name="uploadFile"
                               required
                             />
                           </div>

@@ -53,19 +53,19 @@
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
       <div class="container d-flex align-items-center">
-        <h1 class="logo me-auto"><a href="index.html">Togather</a></h1>
+        <h1 class="logo me-auto"><a href="../">Togather</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html" class="logo me-auto"><img src="/assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
         <nav id="navbar" class="navbar order-last order-lg-0">
           <ul>
-            <li><a class="active" href="index.html">Home</a></li>
+            <li><a class="active" href="../">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="myGroup.html">나의 모임</a></li>
             <!--로그인시에만 보이게 하기-->
-            <li><a href="boardMain.html">게시판</a></li>
+            <li><a href="../board/listPage">게시판</a></li>
             <li>
-              <a href="wishlist.html"
+              <a href=""
                 >찜목록
                 <span class="badge bg-dark text-white ms-1 rounded-pill"
                   >0</span
@@ -96,7 +96,6 @@
       </div>
     </header>
     <!-- End Header -->
-
     <main id="main" data-aos="fade-in">
       <!-- ======= Breadcrumbs ======= -->
       <div class="breadcrumbs">
@@ -111,133 +110,49 @@
       <section id="courses" class="courses">
         <div class="container" data-aos="fade-up">
           <div class="row" data-aos="zoom-in" data-aos-delay="100">
-            <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-              <div class="course-item">
-                <img
-                  src="/assets/img/course-1.jpg"
-                  class="img-fluid"
-                  alt="..."
-                />
-                <div class="course-content">
-                  <div
-                    class="d-flex justify-content-between align-items-center mb-3"
-                  >
-                    <h4>Web Development</h4>
-                    <p class="price">$169</p>
-                  </div>
-
-                  <h3><a href="course-details.html">Website Design</a></h3>
-                  <p>
-                    Et architecto provident deleniti facere repellat nobis iste.
-                    Id facere quia quae dolores dolorem tempore.
-                  </p>
-                  <div
-                    class="trainer d-flex justify-content-between align-items-center"
-                  >
-                    <div class="trainer-profile d-flex align-items-center">
-                      <img
-                        src="/assets/img/trainers/trainer-1.jpg"
-                        class="img-fluid"
-                        alt=""
-                      />
-                      <span>Antonio</span>
-                    </div>
-                    <div class="trainer-rank d-flex align-items-center">
-                      <i class="bx bx-user"></i>&nbsp;50 &nbsp;&nbsp;
-                      <i class="bx bx-heart"></i>&nbsp;65
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- End Course Item-->
-
-            <div
-              class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0"
-            >
-              <div class="course-item">
-                <img
-                  src="/assets/img/course-2.jpg"
-                  class="img-fluid"
-                  alt="..."
-                />
-                <div class="course-content">
-                  <div
-                    class="d-flex justify-content-between align-items-center mb-3"
-                  >
-                    <h4>Marketing</h4>
-                    <p class="price">$250</p>
-                  </div>
-
-                  <h3>
-                    <a href="course-details.html">Search Engine Optimization</a>
-                  </h3>
-                  <p>
-                    Et architecto provident deleniti facere repellat nobis iste.
-                    Id facere quia quae dolores dolorem tempore.
-                  </p>
-                  <div
-                    class="trainer d-flex justify-content-between align-items-center"
-                  >
-                    <div class="trainer-profile d-flex align-items-center">
-                      <img
-                        src="/assets/img/trainers/trainer-2.jpg"
-                        class="img-fluid"
-                        alt=""
-                      />
-                      <span>Lana</span>
-                    </div>
-                    <div class="trainer-rank d-flex align-items-center">
-                      <i class="bx bx-user"></i>&nbsp;35 &nbsp;&nbsp;
-                      <i class="bx bx-heart"></i>&nbsp;42
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- End Course Item-->
-
-            <div
-              class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0"
-            >
-              <div class="course-item">
-                <img
-                  src="/assets/img/course-3.jpg"
-                  class="img-fluid"
-                  alt="..."
-                />
-                <div class="course-content">
-                  <div
-                    class="d-flex justify-content-between align-items-center mb-3"
-                  >
-                    <h4>Content</h4>
-                    <p class="price">$180</p>
-                  </div>
-
-                  <h3><a href="course-details.html">Copywriting</a></h3>
-                  <p>
-                    Et architecto provident deleniti facere repellat nobis iste.
-                    Id facere quia quae dolores dolorem tempore.
-                  </p>
-                  <div
-                    class="trainer d-flex justify-content-between align-items-center"
-                  >
-                    <div class="trainer-profile d-flex align-items-center">
-                      <img
-                        src="/assets/img/trainers/trainer-3.jpg"
-                        class="img-fluid"
-                        alt=""
-                      />
-                      <span>Brandon</span>
-                    </div>
-                    <div class="trainer-rank d-flex align-items-center">
-                      <i class="bx bx-user"></i>&nbsp;20 &nbsp;&nbsp;
-                      <i class="bx bx-heart"></i>&nbsp;85
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            	 <c:forEach var="groupList" items="${groupList}" varStatus="status" >
+          	  	
+	            <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+	              <div class="course-item">
+	                <img
+	                  src="/assets/img/course-1.jpg"
+	                  class="img-fluid"
+	                  alt="..."
+	                />
+	                <div class="course-content">
+	                  <div
+	                    class="d-flex justify-content-between align-items-center mb-3"
+	                  >
+	                    <h4>${groupList.interest}</h4>
+	                    <p class="price">${groupList.gloc}</p>
+	                  </div>
+	
+	                  <h3><a href="../groupTab/groupInfo.do?gseq=${groupList.gseq}&mnum=${m.mnum}">${groupList.gname}</a></h3>
+	                  <p>
+				      		${groupList.gintro}
+	                  </p>
+	                  <p><i class="fa fa-map-marker-alt text-primary me-2"></i>${groupList.gloc}</p>
+	                  <div
+	                    class="trainer d-flex justify-content-between align-items-center"
+	                  >
+	                    <div class="trainer-profile d-flex align-items-center">
+	                      <img
+	                        src="/assets/img/trainers/trainer-1.jpg"
+	                        class="img-fluid"
+	                        alt=""
+	                      />                   
+	                      <span>${namelist[status.index].mname}</span>        
+	                    </div>
+	                    <div class="trainer-rank d-flex align-items-center">
+	                      <i class="bx bx-user"></i>&nbsp;50 &nbsp;&nbsp;
+	                      <i class="bx bx-heart"></i>&nbsp;65
+	                    </div>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	            
+            </c:forEach>
             <!-- End Course Item-->
           </div>
         </div>

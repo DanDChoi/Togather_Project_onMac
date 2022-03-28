@@ -8,7 +8,6 @@ import team1.togather.domain.QandA;
 import team1.togather.domain.QaReply;
 
 public interface QandA_Service {
-	public List<QandA> listPage(int page); //특정페이지 글정보확인
 	public List<QandA> listCri(BoardCriteria cri); // 페이징처리(cri객체사용)
 	public Integer pageCount(); //db테이블 모든글 개수 계산 후 리턴
 	QandA pwdQA(QandA qanda);//비밀글 들어가기

@@ -44,17 +44,14 @@
     <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
     <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
     <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
-    <!-- Template Main CSS File -->
-    <link href="/assets/css/style.css" rel="stylesheet" />
-    
     <!-- alert -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    
-    <!-- JQuery -->
+     <!-- alert -->
 	<script type="text/javascript" language="javascript" 
 		     src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    
+    <!-- Template Main CSS File -->
+    <link href="/assets/css/style.css" rel="stylesheet" />
     <script type="text/javascript">
     
     function groupJoin(){
@@ -71,17 +68,22 @@
 				var mnum = ${m.mnum};
 	  			var gseq = ${groupInfo.gseq};
 	  			var result = {"mnum":mnum,"gseq":gseq};
-		  		$(function(){
-  				$.ajax({
-	   					url: "memInGroup.json",
-	   					type: "POST",
-	   					data: result,
-	   					success: function(data){
-	   					}
-  				});
-  				location.reload(); 
-		  		});
-		  		
+	  				$.ajax({
+		   					url: "memInGroup.json",
+		   					type: "POST",
+		   					data: result,
+		   					success: function(data){
+		   						if(data==1){
+		   							Swal.fire({
+			  							  title: "모임 정원이 꽉 찼습니다",
+			  							  icon: "error"
+		   							});
+		   						}else{
+		   							location.reload();
+		   						}
+		   						
+		   					}
+	  				});
 			  }  			  
 			});
     	}
@@ -174,7 +176,7 @@
 	   				});  
 	   			});
     	}
-  
+    	
     	function groupUpdate(){
     		location="groupUpdate.do?gseq=${groupInfo.gseq}";
     	}
@@ -182,7 +184,7 @@
     	function groupDelete(){
     		location="groupDelete.do?gseq=${groupInfo.gseq}";
     	}
-
+    	
     	function memberInfo(index){
     		var arr = new Array();
     		<c:forEach var="memInGroupName" items="${memInGroupName}">	              
@@ -224,8 +226,6 @@
     	function gatheringCreate(){
     		location="../gathering/gatheringCreate.do?gseq=${groupInfo.gseq}&mnum=${m.mnum}";
     	}
-    	 
-    
     </script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script>
@@ -275,7 +275,7 @@
               <ul>
                 <li><a href="notice.html">공지사항</a></li>
                 <li><a href="FAQ.html">자주묻는 질문</a></li>
-                <li><a href="qa">Q&A</a></li>
+                <li><a href="../qa">Q&A</a></li>
                 <li><a href="contact.html">Contact</a></li>
               </ul>
             </li>
@@ -310,7 +310,7 @@
       <div class="breadcrumbs" data-aos="fade-in">
         <div class="container">
           <h1>${groupInfo.gname}</h1>
-          <p>모임 소개? or 지역?</p>
+          <p>${groupInfo.rdate }</p>
         </div>
       </div>
       <!-- End Breadcrumbs -->
@@ -318,7 +318,6 @@
       <!-- ======= Cource Details Section ======= -->
       <section id="course-details" class="course-details">
         <div class="container" data-aos="fade-up">
-        <!-- 상단부 nav 바 -->
         <ul class="nav nav-tabs mb-3">
         	<li class="nav-item">
         		<a class="nav-link active" aria-current="page" href="#">정보</a>
@@ -329,13 +328,13 @@
         	<li class="nav-item">
         		<a class="nav-link" href="#">게시판</a>
         	</li>
-        </ul>
-        
+        </ul> 
           <div class="row">
             <div class="col-lg-8">
               <img
-                src="/assets/img/course-details.jpg"
-                class="img-fluid"
+                src="/assets/img/groupImages/${groupInfo.fname}"
+                width="856px"
+	            height="383px"
                 alt=""
               />
               <h3>${groupInfo.gname}</h3>
@@ -397,22 +396,6 @@
                       <a href="../gathering/gatheringInfo.do?ga_seq=${gathering.ga_seq}&mnum=${m.mnum}">${gathering.ga_name}</a>
                     </div>
                    </c:forEach>
-                   <!-- <div class="acoordion-body">
-                   <nav aria-label="Page navigation example">
-					  <ul class="pagination" style="justify-content:center">
-					    <li class="page-item">
-					      <a class="page-link" href="#" aria-label="Previous">
-					        <span aria-hidden="true">&laquo;</span>
-					      </a>
-					    </li>
-					   	<li class="page-item">
-					      <a class="page-link" href="#" aria-label="Next">
-					        <span aria-hidden="true">&raquo;</span>
-					      </a>
-					    </li>
-					  </ul>
-					</nav> 
-                   </div>-->
                   </div>
                 </div>
               </div>
@@ -462,7 +445,7 @@
 	          </nav>
 	          </div>
               <div class="d-grid gap-2 mt-3 mb-3">
-               <c:if test="${memInGroupCheck ne null}">
+                <c:if test="${memInGroupCheck ne null}">
                 <button
                   type="button"
                   class="btn btn-outline-success"
@@ -471,7 +454,6 @@
                  	정모만들기
                 </button>
                 </c:if>
-                
                 <button type="button" class="btn btn-outline-secondary" 
                 	onclick="location.href='javascript:groupUpdateCheck()'">
                   	모임 수정하기

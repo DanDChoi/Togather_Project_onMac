@@ -37,26 +37,76 @@
     <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
     <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
     <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
-	<script src="http://code.jquery.com/jquery-latest.js"></script>
+
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet" />
+     <!-- alert  -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<!-- jquery -->
 	<script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
       <script>
+      $(function(){
+   		document.getElementById('my_btn').click();
+   	});
+       function buttonCheck(messageCheck,loginCheck){
+      	 console.log("messageCheck: "+messageCheck);
+      	 var mnum = loginCheck;
+      	 if(messageCheck !=null && messageCheck!=0){//checkNum이 널이면 로그인이 안되어있거나 메세지가없는것,0이면 알림을끝상태
+      		 const Toast = Swal.mixin({
+      			  toast: true,
+      			  position: 'top-end',
+      			  showConfirmButton: true,
+      			  showCancelButton: true,
+      			  confirmButtonText : "메세지 보러가기",
+      			  cancelButtonText: '알림끄기',
+      			  timer: 3000,
+      			  timerProgressBar: true,
+      			  didOpen: (toast) => {
+      			    toast.addEventListener('mouseenter', Swal.stopTimer);
+      			    toast.addEventListener('mouseleave', Swal.resumeTimer);
+      			  }
+      			})
+      			Toast.fire({
+      			  icon: 'success',
+      			  title: '새로운 메세지가 있습니다'
+      			}).then((result) => {
+      				  if (result.isConfirmed) {//여기에 로직 메세지 이동하는
+  				   			location.href="member/messageList?mnum="+mnum;
+
+      					  } else if (
+      					    /* Read more about handling dismissals below */
+      					    result.dismiss === Swal.DismissReason.cancel
+      					  ) {//여기에 로직 알림끄는 
+      						  var result = {"mnum":mnum};
+      						  $.ajax({
+      			   					url: "viewChecked.json",
+      			   					type: "POST",
+      			   					data: result,
+      			   					success: function(data){
+      			   						console.log(data);
+      			   					}
+      		  				});  
+      					  }	 
+      			})
+      	 }
+       }
       Kakao.init('11400a9267d93835389eb9255fcaad0b');
       function signout(){
         if(Kakao.Auth.getAccessToken() != null){
     	  Kakao.Auth.logout(function(){
     	    setTimeout(function(){
               location.href="member/logout.do";
-              
            },500);
          });
         }else{
         	location.href="member/logout.do";
-        	 
         }
       }
-
+      </script>
+      
+      <script type="text/javascript">
      	$(function(){
      		$("#찜하기버튼id").on("click", function(){
      			$.ajax({
@@ -77,17 +127,174 @@
      			})
      		});
      	});
-     	window.onpageshow = function(event) {
-     		if ( event.persisted || (window.performance && window.performance.navigation.type == 2)) { 
-     			location.reload();
-     		} 
-     		
-     	}
-
       </script>
+      <script type="text/javascript">
+      function showGroups(e){
+    		$.ajax({
+    			url:"/showGroups",
+    			type:"GET",
+    			dataType:"json",
+    			contentType: "application/json",
+    			data :{
+    				category:$(e).find('h3').text()
+    			},
+    			success: function(result){
+    				console.log("##5showGroups success: "+result);
+    				if(result.length==0){
+    					$("#popularSection").empty();
+    					document.getElementById('showGroupform').innerText = "해당 관심사의 개설된 모임이 없습니다";
+    				}else{
+    					$("#popularSection").empty();
+    					var inter = result[0].interest;
+    					document.getElementById('showGroupform').innerText = "관심사: "+inter;
+	    				$(result).each(function(){
+	    					$("#popularSection").append(
+	    						"<div class=\"col-lg-4 col-md-6 d-flex align-items-stretch\">"
+	    						+"<div class=\"course-item\">"
+	    						+"<img src=\"/assets/img/course-1.jpg\" class=\"img-fluid\" alt=\"...\" />"
+	    						+"<div class=\"course-content\">"
+	    						+"<div class=\"d-flex justify-content-between align-items-center mb-3\" >"
+	    						+"<h4>"+this.interest+"</h4>"
+	    						+"<p class=\"price\">"+this.gloc+"</p>"
+	    						+"</div>"
+	    						+"<h3><a href=\"groupTab/groupInfo.do?gseq="+this.gseq+"&mnum=${m.mnum}\">"+this.gname+"</a></h3>"
+	    						+"<p>"+this.gintro+"</p>"
+	    						+"<p><i class=\"fa fa-map-marker-alt text-primary me-2\"></i>"+this.gloc+"</p>"
+	    						+"<div class=\"trainer d-flex justify-content-between align-items-center\" >"
+	    						+"<div class=\"trainer-profile d-flex align-items-center\">"
+	    						+"<img src=\"/assets/img/trainers/trainer-1.jpg\" class=\"img-fluid\" alt=\"\" />"
+								+"</div>"
+								+"<div class=\"trainer-rank d-flex align-items-center\">"
+								+"<i class=\"bx bx-user\"></i>&nbsp;50 &nbsp;&nbsp;"
+					            +"<i class=\"bx bx-heart\"></i>&nbsp;65"
+					            +"</div></div></div></div></div>"
+	    					);
+	    				})
+    				} 
+      			},
+      			error: function(error){
+      				console.log("##error: "+error); 
+      			}
+      			
+      		});
+      	}
+      </script>
+      
+      <script type="text/javascript">
+      	function showInCate(e){
+      		$.ajax({
+      			url:"/showInCategory",
+      			type:"GET",
+      			dataType:"json",
+      			contentType: "application/json",
+      			data :{
+      				int_out:$(e).find('a').text()
+      			},
+      			success: function(result){
+      				console.log("##success: "+result);
+      				$("#addInCateForm").empty();
+      				$("#addInCateForm2").empty();
+      				$("#addInCateForm3").empty();
+      				var tmp;
+      				$(result).each(function(){
+      					if(this.int_out!='업종/직무'&&this.int_out!='게임/오락' ){
+	      					$("#addInCateForm").append(
+	      			         	"<div onClick='showGroups(this)' class=\"col-lg-3 col-md-4\">"
+	      			         	+"<div class=\"icon-box\">"
+	      			         	+"<h3><a >"+this.int_in+"</a></h3>"
+	      			         	+"</div></div>"
+	      					);
+	      				  }else if(this.int_out=='업종/직무'){
+							if(this.int_in=='업종'){
+								$('#addInCateForm #catetheme').text("업종");
+		      					$("#addInCateForm").append(
+			      			         	"<div onClick='showGroups(this)' class=\"col-lg-3 col-md-4\">"
+			      			         	+"<div class=\"icon-box\">"
+			      			         	+"<h3>("+this.int_in+")<a >"+this.first_option+"</a></h3>"
+			      			         	+"</div></div>"
+			      					);
+							}
+							if(this.int_in=='직무'){
+								$('#addInCateForm2 #catetheme2').text("직무");
+		      					$("#addInCateForm2").append(
+			      			         	"<div onClick='showGroups(this)' class=\"col-lg-3 col-md-4\">"
+			      			         	+"<div class=\"icon-box\">"
+			      			         	+"<h3>("+this.int_in+")<a >"+this.first_option+"</a></h3>"
+			      			         	+"</div></div>"
+			      					);
+							}
+							if(this.int_in=='테마'){
+								$('#addInCateForm3 #catetheme3').text("테마");
+		      					$("#addInCateForm3").append(
+			      			         	"<div onClick='showGroups(this)' class=\"col-lg-3 col-md-4\">"
+			      			         	+"<div class=\"icon-box\">"
+			      			         	+"<h3>("+this.int_in+")<a >"+this.first_option+"</a></h3>"
+			      			         	+"</div></div>"
+			      					);
+							}
+	      				  }else if(this.int_out=='게임/오락'){
+	      					if(this.int_in=='온라인게임'){
+								$('#addInCateForm #catetheme').text("업종");
+		      					$("#addInCateForm").append(
+			      			         	"<div onClick='showGroups(this)' class=\"col-lg-3 col-md-4\">"
+			      			         	+"<div class=\"icon-box\">"
+			      			         	+"<h3>("+this.int_in+")<a >"+this.first_option+"</a></h3>"
+			      			         	+"</div></div>"
+			      					);
+							}
+							if(this.int_in=='보드게임'){
+								$('#addInCateForm2 #catetheme2').text("직무");
+		      					$("#addInCateForm2").append(
+			      			         	"<div onClick='showGroups(this)' class=\"col-lg-3 col-md-4\">"
+			      			         	+"<div class=\"icon-box\">"
+			      			         	+"<h3>("+this.int_in+")<a >"+this.first_option+"</a></h3>"
+			      			         	+"</div></div>"
+			      					);
+							}
+							if(this.int_in=='단체놀이'){
+								$('#addInCateForm3 #catetheme3').text("테마");
+		      					$("#addInCateForm3").append(
+			      			         	"<div onClick='showGroups(this)' class=\"col-lg-3 col-md-4\">"
+			      			         	+"<div class=\"icon-box\">"
+			      			         	+"<h3>("+this.int_in+")<a >"+this.first_option+"</a></h3>"
+			      			         	+"</div></div>"
+			      					);
+							}
+	      				  }
+      				})
+      			},
+      			error: function(error){
+      				console.log("##error: "+error); 
+      			}
+      			
+      		});
+      	}
+      </script>
+      
   </head>
 
-  <body >
+  <body>
+  <c:choose>
+		<c:when test="${message eq null}">
+			<c:set value="null" var="message"/>
+		</c:when>
+		<c:otherwise>
+			<c:set value="${message}" var="message"/>
+		</c:otherwise>
+	</c:choose>
+	<c:choose>
+		<c:when test="${m eq null}">
+			<c:set value="null" var="loginCheck"/>
+		</c:when>
+		<c:otherwise>
+			<c:set value="${m.mnum}" var="loginCheck"/>
+		</c:otherwise>
+	</c:choose>
+	<input 
+	  id='my_btn'
+	  type='button' 
+	  onclick='buttonCheck(${message},${loginCheck})'
+	  />
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
       <div class="container d-flex align-items-center">
@@ -99,20 +306,26 @@
           <ul>
             <li><a class="active" href="/">Home</a></li>
             <li><a href="about.html">About</a></li>
+			<li><a href="board/listPage">게시판</a></li>          
           <c:if test="${m ne null}">
             <li><a href="groupTab/myGroup.do?mnum=${m.mnum }">나의 모임</a></li><!--로그인시에만 보이게 하기-->
-           	<li><a href="wishlist.html">찜목록
-           	<span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-           	</a></li>
+          	<li><a href="wishTab/wishList?mnum=${m.mnum }">찜목록
+              <span id="numberOfWish" class="badge bg-dark text-white ms-1 rounded-pill">${wishsize }</span>
+              </a></li>
            </c:if>
-            <li><a href="board/listPage">게시판</a></li>
+            
+            
+
+            
+            
+
             <li class="dropdown">
               <a href="#"
                 ><span>고객지원</span> <i class="bi bi-chevron-down"></i
               ></a>
               <ul>
-                <li><a href="notice.html">공지사항</a></li>
-                <li><a href="FAQ.html">자주묻는 질문</a></li>
+                <li><a href="notification/notice">공지사항</a></li>
+                <li><a href="faq/listPage">자주묻는 질문</a></li>
                 <li><a href="qa">Q&A</a></li>
                 <li><a href="contact.html">Contact</a></li>
               </ul>
@@ -229,7 +442,7 @@
           <section id="counts" class="counts section-bg mb-5">
             <div class="container">
               <div class="row counters">
-                <div class="col-lg-3 col-6 text-center">
+                <div onClick="showInCate(this)" class="col-lg-3 col-6 text-center">
                   <span
                     data-purecounter-start="0"
                     data-purecounter-end="${membercount }"
@@ -239,7 +452,7 @@
                   <p>회원수</p>
                 </div>
     
-                <div class="col-lg-3 col-6 text-center">
+                <div onClick="showInCate(this)" class="col-lg-3 col-6 text-center">
                   <span
                     data-purecounter-start="0"
                     data-purecounter-end="${groupcount }"
@@ -249,17 +462,17 @@
                   <p>개설된 모임</p>
                 </div>
     
-                <div class="col-lg-3 col-6 text-center">
+                <div onClick="showInCate(this)" class="col-lg-3 col-6 text-center">
                   <span
                     data-purecounter-start="0"
-                    data-purecounter-end="${gatheringcount }"
+                    data-purecounter-end="${gatheringcount}"
                     data-purecounter-duration="1"
                     class="purecounter"
                   ></span>
                   <p>개설된 정모</p>
                 </div>
     
-                <div class="col-lg-3 col-6 text-center">
+                <div onClick="showInCate(this)" class="col-lg-3 col-6 text-center">
                   <span
                     data-purecounter-start="0"
                     data-purecounter-end="2198"
@@ -279,97 +492,97 @@
       <section id="features" class="features">
         <div class="container" data-aos="fade-up">
           <div class="row" data-aos="zoom-in"  data-aos-delay="100">
-            <div class="col-lg-3 col-md-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4">
               <div class="icon-box">
                 <i class="ri-football-fill" style="color: #ffbb2c"></i>
                 <h3><a href="">운동/스포츠</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4 mt-md-0">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4 mt-md-0">
               <div class="icon-box">
                 <i class="ri-footprint-line" style="color: #5578ff"></i>
                 <h3><a href="">아웃도어/여행</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4 mt-md-0">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4 mt-md-0">
               <div class="icon-box">
                 <i class="ri-translate-2" style="color: #e80368"></i>
                 <h3><a href="">외국/언어</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4 mt-lg-0">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4 mt-lg-0">
               <div class="icon-box">
                 <i class="ri-music-2-line" style="color: #e361ff"></i>
                 <h3><a href="">음악/악기</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-roadster-line" style="color: #47aeff"></i>
                 <h3><a href="">차/오토바이</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-cake-3-line" style="color: #ffa76e"></i>
                 <h3><a href="">요리/제조</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-briefcase-5-line" style="color: #4233ff"></i>
                 <h3><a href="">업종/직무</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-open-arm-line" style="color: #b2904f"></i>
                 <h3><a href="">문화/공연/축제</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-palette-line" style="color: #b20969"></i>
                 <h3><a href="">공예/만들기</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-group-line" style="color: #ff5828"></i>
                 <h3><a href="">댄스/무용</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-user-heart-line" style="color: #29cc61"></i>
                 <h3><a href="">봉사활동</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-book-2-line" style="color: #11dbcf"></i>
                 <h3><a href="">인문학/책/글<a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-camera-line" style="color: #26c2d6"></i>
                 <h3><a href="">사진/영상</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-gamepad-line" style="color: #e737cf"></i>
                 <h3><a href="">게임/오락</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-mickey-line" style="color: #909b00"></i>
                 <h3><a href="">반려동물</a></h3>
               </div>
             </div>
-            <div class="col-lg-3 col-md-4 mt-4">
+            <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
               <div class="icon-box">
                 <i class="ri-send-plane-fill" style="color: #093166"></i>
                 <h3><a href="">자유주제</a></h3>
@@ -378,25 +591,47 @@
           </div>
         </div>
       </section>
-      <!-- End Features Section -->
-
-      <!-- ======= Popular Courses Section ======= -->
+<!-- End Features Section -->
+      <section id="features2" class="features">
+		<div  class="container" data-aos="fade-up">
+	          <div id="addInCateForm" class="row" data-aos="zoom-in"  data-aos-delay="100">
+	          	<h2 id="catetheme"></h2>
+	          </div>
+	    </div>
+	   </section>
+	   <section id="features2" class="features">
+		<div  class="container" data-aos="fade-up">
+	          <div id="addInCateForm2" class="row" data-aos="zoom-in"  data-aos-delay="100">
+	          	<h2 id="catetheme2"></h2>
+	          </div>
+	    </div>
+	   </section>
+	   <section id="features2" class="features">
+		<div  class="container" data-aos="fade-up">
+	          <div id="addInCateForm3" class="row" data-aos="zoom-in"  data-aos-delay="100">
+	          	<h2 id="catetheme3"></h2>
+	          </div>
+	    </div>
+	   </section>
+<!-- 섹션종료 -->
+ <!-- ======= Popular Courses Section ======= -->
       <section id="popular-courses" class="courses">
         <div class="container" data-aos="fade-up">
           <div class="section-title">
             <h2>소모임</h2>
-            <p>Popular Groups</p>
+            <p id="showGroupform">Popular Groups</p>
           </div>
           <!--popular모임 첫번째줄 시작-->
-          <div class="row" data-aos="zoom-in" data-aos-delay="100">
-          	  <c:forEach var="groupList" items="${list}"  varStatus="status" >
+          <div id="popularSection" class="row" data-aos="zoom-in" data-aos-delay="100">
+          	  <c:forEach var="groupList" items="${list}" varStatus="status" >
           	  	
 	            <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
 	              <div class="course-item">
 	                <img
-	                  src="/assets/img/course-1.jpg"
-	                  class="img-fluid"
-	                  alt="..."
+	                  src="/assets/img/groupImages/${groupList.fname }"
+	                  width="414px"
+	                  height="275px"
+	                  alt="..." 
 	                />
 	                <div class="course-content">
 	                  <div
@@ -420,12 +655,10 @@
 	                        class="img-fluid"
 	                        alt=""
 	                      />                   
-	                      <span>${namelist[status.index].mname}</span>        
+	                      <span>${namelist[status.index]}</span>        
 	                    </div>
 	                    <div class="trainer-rank d-flex align-items-center">
-	                    
 	                      <i class="bx bx-user"></i>&nbsp;${groupMemberCount[status.index]} &nbsp;&nbsp;
-	                     
 	                      <i class="bx bx-heart"></i>&nbsp;65
 	                    </div>
 	                  </div>
@@ -482,19 +715,19 @@
               </ul>
             </div>
 
-            <div class="col-lg-3 col-md-6 footer-links">
+            <div  class="col-lg-3 col-md-6 footer-links">
               <h4>Our Services</h4>
               <ul>
                 <li>
-                  <i class="bx bx-chevron-right"></i> <a href="notice.html">공지사항</a>
+                  <i class="bx bx-chevron-right"></i> <a href="notification/notice">공지사항</a>
                 </li>
                 <li>
                   <i class="bx bx-chevron-right"></i>
-                  <a href="FAQ.html">자주 묻는 질문</a>
+                  <a href="faq/listPage">자주 묻는 질문</a>
                 </li>
                 <li>
                   <i class="bx bx-chevron-right"></i>
-                  <a href="QA.html">Q & A</a>
+                  <a href="qa">Q & A</a>
                 </li>
                 <li>
                   <i class="bx bx-chevron-right"></i> <a href="contact.html">Contact</a>

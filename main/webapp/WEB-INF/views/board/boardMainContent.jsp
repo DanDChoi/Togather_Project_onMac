@@ -58,6 +58,88 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+ 	<script src="http://code.jquery.com/jquery-latest.js"></script>  
+  	<script type="text/javascript">
+  		$(document).on("click","#postComment" ,function(){
+  			var outerform = document.getElementById('div#outerreplyform');
+  			var data = JSON.stringify({
+  					content:$("#content").val(),
+  					mnum:"${m.mnum}",
+  					mname:"${m.mname}",
+  					bnum:"${bnum}"
+  			});
+  			$.ajax({
+  				url:"/board/addReply",
+  				type:"POST",
+  				dataType:"json",
+  				contentType: "application/json",
+  				data: data,
+  				success: function(result){
+  					console.log("1postcomment success");
+  					var divlen = $("#outerreplyform #middleform").length;
+  					if(divlen!=0){
+	  					for(var t=0;t<divlen;t++){
+	  						console.log("44middle div길이: "+divlen);
+	  						$("#outerreplyform #middleform").empty(); 
+	  					}
+	  				}
+  					
+  					$(result).each(function(){
+  						
+  						if(this.content==null){
+  							console.log("contentnull");
+  							this.content=" ";
+  						}
+  						$("#outerreplyform").append(
+  								"<div id=\"middleform\" class=\"media-grid\">"
+  								+"<div class=\"media\">"
+  								+"<a class=\"comment-img\" href=\"#url\"><img src=\"/assets/images/team1.jpg\""
+  								+" class=\"img-responsive\" width=\"100px\" alt=\"placeholder image\"></a>"
+  								+"<div id=\"innerreplyform\" class=\"media-body comments-grid-right\">"
+  		  						+"<h5>"+this.mname+"</h5>"
+  		  						+"<ul class=\"p-0 comment\">"
+  		  							+"<li>"+this.rdate+"</li>"
+  		  							+"<li onclick=\"setR_like(this)\"><a><i class=\"bi bi-hand-thumbs-up\" aria-hidden=\"true\"></i>"+this.r_like+" 좋아요</a>"
+  		  							+"<div class=\"hiddenrseq\" style=\"display:none\">"+this.rseq+"</div><li></ul>"
+  		  						+"<p>"+this.content+"</p>"
+  		  						+"</div></div></div>" 
+  		  					);
+  						$("#content").val("");
+  						var totalreply = result.length;
+   						document.getElementById('commentsNum').innerHTML = "Recent Comments("+totalreply+")";
+  						
+  					})
+  				},
+  				error: function(error){
+  					console.log("##postComment error");
+  				}
+  				
+  			});
+  		});
+  	</script>
+ 	<script>
+ 	function setR_like(e){
+ 		var data = JSON.stringify({
+ 			rseq: $(e).find('div').text(),
+ 			mnum:"${m.mnum}"
+ 		})
+		$.ajax({
+			url:"/board/setR_like",
+			type:"POST",
+			dataType:"json",
+			contentType: "application/json",
+			data : data,
+			success: function(result){
+				console.log("##success: "+result); 
+				$(e).find('p').text(result);
+  			},
+  			error: function(error){
+  				console.log("##error: "+error); 
+  			}
+  		});
+  	}
+ 	
+ 	</script>
   </head>
 
   <body>
@@ -142,29 +224,45 @@
                         <a class="next-post pull-right" href="#next">Next Post <span class="fa fa-arrow-right"
                                 aria-hidden="true"></span></a>
                     </div>
-                    <div class="comments mt-5">
-                        <h3 class="aside-title ">Recent comments(${totalReply })</h3>
+                    <div id="outerreplyform" class="comments mt-5">
+                        <h3 id="commentsNum" class="aside-title ">Recent comments(${totalReply })</h3>
                         <div class="comments-grids">
                             <!-- 여기부터 루프 -->
 <c:if test="${not empty reply }">
 <c:forEach var="replyList" items="${reply }">
-                            <div class="media-grid">
+							<div  >
+                            <div id="middleform" class="media-grid">
                                 <div class="media">
                                     <a class="comment-img" href="#url"><img src="/assets/images/team1.jpg"
                                             class="img-responsive" width="100px" alt="placeholder image"></a>
-                                    <div class="media-body comments-grid-right">
+                                    <div id="innerreplyform" class="media-body comments-grid-right">
                                         <h5>${replyList.mname }</h5>
                                         <ul class="p-0 comment">
                                             <li class="">${replyList.rdate }</li>
+                                            <c:if test="${m ne null }">
+                                            <li onclick="setR_like(this)">
+                                            	<p>${replyList.r_like}</p> 
+                                                <a > 좋아요<i class="bi bi-hand-thumbs-up"
+                                                        aria-hidden="true"></i> </a>
+                                                
+                                                <div class="hiddenrseq" style="display:none">${replyList.rseq }</div>
+                                            </li> 
+                                            </c:if>
+                                            <c:if test="${m eq null }">
                                             <li>
-                                                <a href="#comment"><i class="fa fa-reply mr-1"
-                                                        aria-hidden="true"></i>Reply</a>
+                                            	<p>${replyList.r_like}</p> 
+                                                <a > 좋아요<i class="bi bi-hand-thumbs-up"
+                                                        aria-hidden="true"></i></a>
+                                                
+                                                <div class="hiddenrseq" style="display:none">${replyList.rseq }</div>
                                             </li>
+                                            </c:if>
                                         </ul>
                                         <p>${replyList.content }</p>
 
-                                    </div>
+                                    </div> 
                                 </div>
+                            </div>
                             </div>
 </c:forEach>
 </c:if>
@@ -172,25 +270,17 @@
                     </div>
                     <div class="leave-comment-form" id="comment">
                         <h3 class="aside-title">Leave a reply</h3>
-                        <form action="#" method="post">
+                       	 <c:if test="${m ne null}">
                             <div class="input-grids">
                                 <div class="form-group">
-                                    <input type="text" name="Name" class="form-control" placeholder="Your Name"
-                                        required="">
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" name="Email" class="form-control" placeholder="Email"
-                                        required="">
-                                </div>
-                                <div class="form-group">
-                                    <textarea name="Comment" class="form-control" placeholder="Your Comment"
-                                        required=""></textarea>
+                                    <textarea id="content" name="content" class="form-control" placeholder="Your Comment"
+                                        required></textarea>
                                 </div>
                             </div>
                             <div class="text-right mt-4">
-                                <button class="btn button-style">Post Comment</a>
+                                <button id="postComment"  class="btn button-style">Post Comment</button>
                             </div>
-                        </form>
+                         </c:if>
                     </div>
                 </div>
             </div>

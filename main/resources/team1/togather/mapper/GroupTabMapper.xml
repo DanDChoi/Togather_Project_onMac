@@ -3,8 +3,36 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	<mapper namespace="team1.togather.mapper.GroupTabMapper">
-		<select id="selectAll" resultType="GroupTab">
-			select * from GROUPTAB order by GSEQ desc
+		<!-- 로그인했을때 인덱스에 자기 관심사 그룹 보여주기  -->
+		<select id="loginGroupList" resultType="GroupTab" parameterType="Map">
+			<![CDATA[
+			select * from (select ROWNUM rnum, aa.* from 
+			(select * from groupTab where interest=
+			(select category_first from member where category_first=#{category_first} and mnum=#{mnum}) 
+			order by gseq desc) aa) where rnum>#{startRow} and rnum<=#{endRow}
+			]]>
+		</select>
+		<!-- 여기서부터 로그인했을때 총 페이지갯수가져오는 -->
+		<select id="pageCount" resultType="Integer" parameterType="Member">
+			select count(*) from groupTab where interest=(select category_first from member where category_first=#{category_first} and mnum=#{mnum})
+		</select>
+		<!-- 여기서부터 로그인했을때 카테고리에 맞는 그룹이 없을때 총 페이지갯수가져오는 -->
+		<select id="notCategorypageCount" resultType="Integer">
+			select count(*) from groupTab
+		</select>
+		<!-- 로그인 안했거나 본인 관심사에 관한 그룹이 없을때 인덱스 페이지   -->
+		<select id="selectAll" resultType="GroupTab" parameterType="IndexCriteria">
+			<![CDATA[
+			select * from (select ROWNUM rnum, aa.* from (select * from groupTab order by gseq desc) aa)
+	   		where rnum>#{startRow} and rnum<=#{endRow}
+	   		]]>
+		</select>
+		<!-- 로그인 안했거나 본인 관심사에 관한 그룹이 없을때 인덱스 페이지 모임장 이름   -->
+		<select id="NoCategoryNames" resultType="String" parameterType="IndexCriteria">
+			<![CDATA[
+	   		select m.mname , a.mnum from member m , (select mnum from (select ROWNUM rnum, aa.* from (select * from groupTab order by gseq desc) aa)
+	   		where rnum>#{startRow}  and rnum<=#{endRow}) a where m.mnum = a.mnum
+	   		]]>
 		</select>
 		<select id="selectAllname" resultType="Member">
 			select m.mnum,m.mname from member m,grouptab g where m.mnum=g.mnum order by gseq desc
@@ -37,6 +65,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<insert id="memInGroup" parameterType="MemInGroup">
 			insert into MEM_IN_GROUP values(#{gseq},#{mnum},2)
 		</insert>
+		<!-- 그룹가입할때 현재 그룹 LIMIT 가져오는 -->
+		<select id="LIMIT" resultType="long" parameterType="long">
+			select LIMIT from grouptab where gseq=#{gseq}
+		</select>
 		<!-- 그룹 탈퇴하는 sql -->
 		<delete id="groupQuit" parameterType="MemInGroup">
 			delete mem_in_group where mnum=#{mnum} and gseq=#{gseq}
@@ -69,7 +101,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<select id="insertGroupInfo" resultType="GroupTab" parameterType="GroupTab">
 			select * from grouptab where gseq=(select max(gseq) from grouptab where mnum=#{mnum})
 		</select>
-		
 		<!-- 대현추가 03.26 -->
 		<!-- 그룹 탈퇴시 본인이 만든 정모를 모두 삭제 -->
 		<delete id="quitGroupDeleteGathering" parameterType="long">

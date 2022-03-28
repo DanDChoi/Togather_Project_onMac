@@ -11,7 +11,7 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="dan.md.controller">
+	<logger name="team1.togather.controller">
 		<level value="info" />
 	</logger>
 	

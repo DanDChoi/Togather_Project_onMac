@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import team1.togather.domain.GroupTab;
+import team1.togather.domain.IndexCriteria;
 import team1.togather.domain.MemInGroup;
 import team1.togather.domain.Member;
 import team1.togather.mapper.GroupTabMapper;
@@ -17,11 +18,13 @@ public class GroupTabServiceImpl implements GroupTabService {
 	private GroupTabMapper groupTabMapper;
 	
 	@Override
-	public List<GroupTab> selectAllS() {
-		List<GroupTab> list = groupTabMapper.selectAll();
+	public List<GroupTab> selectAllS(IndexCriteria cri) {
+		List<GroupTab> list = groupTabMapper.selectAll(cri);
 		return list;
 	}
-
+	
+	
+	
 	@Override
 	public GroupTab selectByGSeqS(long gseq) {
 		return groupTabMapper.selectByGSeq(gseq);
@@ -112,6 +115,42 @@ public class GroupTabServiceImpl implements GroupTabService {
 		
 		return groupTabMapper.insertGroupInfo(groupTab);
 	}
+	
+	@Override
+	public List<GroupTab> loginGroupList(Map<String,Object> map) {
+		List<GroupTab> list = groupTabMapper.loginGroupList(map);
+		return list;
+	}
+
+	@Override
+	public Integer pageCount(Member member) {
+		
+		return groupTabMapper.pageCount(member);
+	}
+
+
+
+	@Override
+	public Integer notCategorypageCount() {
+		
+		return groupTabMapper.notCategorypageCount();
+	}
+
+	@Override
+	public long LIMIT(MemInGroup memInGroup) {
+		
+		return groupTabMapper.LIMIT(memInGroup);
+	}
+
+
+
+	@Override
+	public List<String> NoCategoryNames(IndexCriteria cri) {
+		
+		return groupTabMapper.NoCategoryNames(cri);
+	}
+
+
 
 	@Override
 	public void quitGroupDeleteGathering(long mnum) {

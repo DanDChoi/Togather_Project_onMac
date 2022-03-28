@@ -11,8 +11,8 @@
     <meta content="" name="keywords" />
 
     <!-- Favicons -->
-    <link href="../assets/img/favicon.png" rel="icon" />
-    <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+    <link href="/assets/img/favicon.png" rel="icon" />
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
 
     <!-- Google Fonts -->
     <link
@@ -21,10 +21,10 @@
     />
 
     <!-- Vendor CSS Files -->
-    <link href="../assets/vendor/animate.css/animate.min.css" rel="stylesheet" />
-    <link href="../assets/vendor/aos/aos.css" rel="stylesheet" />
+    <link href="/assets/vendor/animate.css/animate.min.css" rel="stylesheet" />
+    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
     <link
-      href="../assets/vendor/bootstrap/css/bootstrap.min.css"
+      href="/assets/vendor/bootstrap/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link
@@ -37,18 +37,28 @@
     />
 
     <link
-      href="../assets/vendor/bootstrap-icons/bootstrap-icons.css"
+      href="/assets/vendor/bootstrap-icons/bootstrap-icons.css"
       rel="stylesheet"
     />
-    <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
-    <link href="../assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
-    <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
-
+    <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
+    <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
+    <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+	<<!-- alert  -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<!-- alert -->
     <!-- Template Main CSS File -->
-    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="/assets/css/style.css" rel="stylesheet" />
     <script type="text/javascript" language="javascript" 
 		     src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>	
+	
+	<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+	<style type="text/css">
+	.swal-footer{
+		text-align:center;
+	}
+	</style>	
 	<script>
       //카카오로그인
       window.Kakao.init("11400a9267d93835389eb9255fcaad0b");
@@ -57,6 +67,7 @@
             scope:'profile_nickname, account_email, gender,	birthday',
             success:function(authObj){
                 console.log(authObj);
+                console.log(Kakao.Auth.getAccessToken());
                 window.Kakao.API.request({
                     url:'/v2/user/me',
                     success:res => {    
@@ -75,13 +86,23 @@
    					data: $('#kakaologin').serialize(),
    					success: function(data){
    						console.log(data);
-   						console.log(data.logincheck);
    						if(data==0){
-   							alert("가입된 회원이 아닙니다");
+   							swal("가입된 회원이 아닙니다");
    							
    						}else{
-   							alert("로그인성공");
-   							location="../";
+   							swal({
+  							  title: "로그인성공!",
+  							  icon: "success",
+  							  button: {
+  								  text:"버튼을 눌러주세요!",
+  								  value:true
+  								  },
+  							  closeOnClickOutside : false
+  							}).then((result)=>{
+  								if(result){
+  									location="../";
+  								}
+  							});
    						}
    					}
    				});
@@ -97,15 +118,30 @@
 				data: $('#loginform').serialize(),
 				success: function(data){
 					console.log(data);
-					console.log(data.logincheck);
 					if(data==0){
-						alert("가입된 회원이 아닙니다");
-						
+						Swal.fire({
+							title:"가입된 회원이 아닙니다",
+							icon: "error"	
+						});			
 					}else if(data==1){
-						alert("비밀번호가 다릅니다");
+						Swal.fire({
+							title:"비밀번호가 다릅니다",
+							icon:"error"	
+						});
 					}else{
-						alert("로그인성공");
-						location="../";
+						swal({
+							  title: "로그인성공!",
+							  icon: "success",
+							  button: {
+								  text:"버튼을 눌러주세요!",
+								  value:true
+								  },
+							  closeOnClickOutside : false
+							}).then((result)=>{
+								if(result){
+									location.href="../";
+								}
+							});
 					}
 				}
 			});
@@ -119,10 +155,13 @@
 		}
 	}
 	</script>
-	
+	<script>
+		window.history.forward();
+	 	function noBack(){window.history.forward();}
+	</script>
   </head>
 
-  <body onload="document.f.phone.focus()">
+  <body onload="document.f.phone.focus()" onload="noBack();" onpageshow="if(event.persisted) noBack();" onunload="">
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
       <div class="container d-flex align-items-center">
@@ -370,12 +409,12 @@
   ></a>
 
   <!-- Vendor JS Files -->
-  <script src="../assets/vendor/purecounter/purecounter.js"></script>
-  <script src="../assets/vendor/aos/aos.js"></script>
-  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="../assets/vendor/php-email-form/validate.js"></script>
+  <script src="/assets/vendor/purecounter/purecounter.js"></script>
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="/assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="../assets/js/main.js"></script>
+  <script src="/assets/js/main.js"></script>
 </html>

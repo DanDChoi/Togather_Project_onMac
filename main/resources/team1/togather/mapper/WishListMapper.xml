@@ -12,4 +12,7 @@
     <delete id="deleteWishList" parameterType="Map">
     	delete from WISHTAB where mnum=#{mnum} and gseq=#{gseq}
     </delete>
+    <select id="wishListFlagCheck" parameterType="Map" resultType="Integer">
+    	select FLAG from WISHTAB where mnum=#{mnum} and gseq=#{gseq}
+    </select>
 </mapper>

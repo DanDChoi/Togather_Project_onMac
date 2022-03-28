@@ -88,18 +88,19 @@
   				var page ="${cri.page}";
   				var pageSize ="${cri.pageSize}";
   				var table = document.getElementById('boardTest');
+  				var data ={
+	  						boardSearch: $("#boardSearch").val(),
+							option:$("#option").val(),
+							page: page,
+							pageSize: pageSize
+						}
   				console.log("page1: "+page+" pageSize: "+pageSize);
   				$.ajax({
 					url:"/board/listRest",
 					type:"GET",
 					dataType:"json",
 					contentType: "application/json",
-					data: {
-						boardSearch: $("#boardSearch").val(),
-						option:$("#option").val(),
-						page: page,
-						pageSize: pageSize
-					},
+					data: data,
 					success: function(result){
 						console.log("##result: "+result); 
 						var trlength = $('#boardTest tr').length;

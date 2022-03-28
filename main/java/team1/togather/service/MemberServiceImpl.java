@@ -9,6 +9,7 @@ import static team1.togather.constant.CheckedConstant.already_email;
 import static team1.togather.constant.CheckedConstant.already_phone;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,8 +18,10 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import team1.togather.domain.Block;
+import team1.togather.domain.Category;
 import team1.togather.domain.MemInGroup;
 import team1.togather.domain.Member;
+import team1.togather.domain.Message;
 import team1.togather.mapper.MemberMapper;
 @Service
 @AllArgsConstructor
@@ -129,5 +132,71 @@ public class MemberServiceImpl implements MemberService {
 		mapper.blockingCancel(block);
 		
 	}
+	
+	//////////////////////////////////////메세지
+	@Override
+	public void sendMessage(Message message) {
+		mapper.sendMessage(message);
+		
+	}
+	@Override
+	public Long messageViewCheck(long mnum) {
+		return mapper.messageViewCheck(mnum);
+	}
+	@Override
+	public void viewChecked(long mnum) {
+		mapper.viewChecked(mnum);
+		
+	}
+	@Override
+	public List<Message> messageList(Map<String,Object> map) {
+		
+		return mapper.messageList(map);
+	}
+	@Override
+	public Message messageContent(long meseq) {
+		return mapper.messageContent(meseq);
+	}
+	@Override
+	public void replyToMessage(Message message) {
+		mapper.replyToMessage(message);
+		
+	}
+	@Override
+	public void messageChecked(long meseq) {
+		mapper.messageChecked(meseq);
+		
+	}
+//////////////////////////////////////회원가입 카테고리
+	@Override
+	public List<Category> firstCategory() {
+		return mapper.firstCategory();
+	}
+	@Override
+	public List<Category> secondCategory(Category category) {
+		return mapper.secondCategory(category);
+	}
+	@Override
+	public List<Category> thirdCategory(Category category) {
+		return mapper.thirdCategory(category);
+	}
+	@Override
+	public Integer messageCount(long mnum) {
+		return mapper.messageCount(mnum);
+	}
+	@Override
+	public void messageDelete(long meseq) {
+		mapper.messageDelete(meseq);
+		
+	}
+	@Override
+	public Long nextPostMessage(Message message) {
+		return mapper.nextPostMessage(message);
+	}
+	@Override
+	public Long previousMessage(Message message) {
+		return mapper.previousMessage(message);
+	}
+	
 	
 }

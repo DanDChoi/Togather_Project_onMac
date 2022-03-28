@@ -37,32 +37,165 @@
 
     <!-- Template Main CSS File -->
     <link href="../assets/css/style.css" rel="stylesheet" />
-
+	<!-- alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+     <!-- alert -->
     <script type="text/javascript" language="javascript" 
 		     src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	<script type="text/javascript">
-	$(function(){
+	/*$(function(){
 		$("#phone_id").on("keyup",function(){
 			var phonecheck = $("#phone_id").val();
-			phonecheck.trim();
+			phonecheck=phonecheck.trim();
 			let check = /^[0-9]+$/;
 			if(phonecheck != null){
 				if (!check.test(phonecheck)) {
-					alert("숫자만 입력 가능합니다.");
+					//alert("숫자만 입력 가능합니다.");
+					
 					$("#phone_id").val("");
 				}
+			}else{
+				
 			}
 		});
-	});	
+	});	*/
+
+	function categorys(sequence){
+			if(sequence==1){
+				$('#firstlabel').remove();
+				$('#secondlabel').remove();
+				$('#thirdlabel').remove();
+				$('#CATEGORY_FIRST').remove();
+				$('#CATEGORY_SECOND').remove();
+				$('#CATEGORY_THIRD').remove();
+				$('#firstbutton').remove();
+				$('#secondbutton').remove();
+				$('#thirdbutton').remove();
+				$('#canclebutton1').remove();
+				$('#canclebutton2').remove();
+				var catagory="";
+				catagory+="<label id='firstlabel' class='form-label mb-0' for='form3Example4cd'>첫번째 관심사</label>";
+				catagory+="<select id='CATEGORY_FIRST' class='form-control' name='category_first'>";
+				catagory+="<option value='0'>선택</option>";
+				catagory+="<c:forEach items='${firstCategory}' var='firstCategory'>";
+				catagory+="<option value='${firstCategory.int_out}'>${firstCategory.int_out}</option>";
+				catagory+="</c:forEach>";
+				catagory+="</select>";
+				catagory+="<button type='button' class='btn btn-success' style='margin-right: 30px' id='firstbutton' onclick='categorys(2)'>다음</button>";
+				$('#selectdiv2').append(                     
+					catagory              		
+				);
+			}else if(sequence==2){
+				var category=$('#CATEGORY_FIRST').val();
+				console.log("category: "+category);
+				if(category==0){ //<-- 첫번쨰 벨류에다가 0을 넣었으니까 0으로 검사해서 0이면 안선택한거
+					Swal.fire({
+						title:"카테고리를 선택해주세요",
+						icon:"warning"
+						});
+				}else{
+					var result = {"int_out":category,"sequence":sequence};
+					$.ajax({
+						url: "category.json",
+						type: "GET",
+						data: result,
+						success: function(data){
+							var secondCategory=data;
+							$('#firstlabel').remove();
+							$('#CATEGORY_FIRST').hide();
+							$('#firstbutton').remove();
+							var catagory="";
+							catagory+="<label id='secondlabel' class='form-label mb-0' for='form3Example4cd'>두번째 관심사</label>";
+							catagory+="<select id='CATEGORY_SECOND' class='form-control' name='category_second'>";
+							catagory+="<option value='0'>선택</option>";
+							for(var i =0;i<data.length;i++){
+								catagory+="<option value="+secondCategory[i].int_in+">"+secondCategory[i].int_in+"</option>";
+							}
+							catagory+="</select>";
+							catagory+="<button type='button' class='btn btn-success' style='margin-right: 30px' id='secondbutton' onclick='categorys(3)'>다음</button>";
+							catagory+="<button type='button' class='btn btn-secondary' onclick='categorys(1)' id='canclebutton1' >취소</button>"
+							$('#selectdiv2').append(                     
+								catagory              		
+							);
+						}
+					});
+				}
+			}else if(sequence==3){//세번째 카테고리 찾기
+				var category=$('#CATEGORY_SECOND').val();
+				console.log("category: "+category);
+				if(category==0){ //<-- 첫번쨰 벨류에다가 0을 넣었으니까 0으로 검사해서 0이면 안선택한거
+					Swal.fire({
+						title:"카테고리를 선택해주세요",
+						icon:"warning"
+						});
+				}else{
+					var result = {"int_in":category,"sequence":sequence};
+					$.ajax({
+						url: "category.json",
+						type: "GET",
+						data: result,
+						success: function(data){
+							var thirdCategory=data;
+							console.log("thirdCategory의 길이"+thirdCategory.length);
+							console.log("data의 길이"+data.length);
+							console.log("data의 길이"+data.length);
+							if(Object.keys(data).length!=1){	
+								$('#secondlabel').remove();
+								$('#CATEGORY_SECOND').hide();
+								$('#secondbutton').remove();
+								$('#canclebutton1').remove();
+								var catagory="";
+								catagory+="<label id='thirdlabel' class='form-label mb-0' for='form3Example4cd'>세번째 관심사</label>";
+								catagory+="<select id='CATEGORY_THIRD' class='form-control' name='category_third'>";
+								catagory+="<option value='0'>선택</option>";
+								for(var i =0;i<data.length;i++){
+									catagory+="<option value="+thirdCategory[i].first_option+">"+thirdCategory[i].first_option+"</option>";
+								}
+								catagory+="</select>";
+								catagory+="<button type='button' class='btn btn-success' style='margin-right: 30px' id='thirdbutton' onclick='categorys(4)'>다음</button>";
+								catagory+="<button type='button' class='btn btn-secondary' onclick='categorys(1)' id='canclebutton2' >취소</button>"
+								$('#selectdiv2').append(                     
+									catagory              		
+								);
+							}else{
+								Swal.fire({
+									title:"하위 카테고리가 없습니다",
+									icon:"warning"
+									});
+							}
+							
+						}
+					});
+				}
+			}else if(sequence==4){
+				Swal.fire({
+					title:"하위 카테고리가 없습니다",
+					icon:"warning"
+					});
+			}    
+		}
 	
 	$(function(){
 		$("#joinbutton").on("click",function(){
+			var checkbox=$('#checkbox').is(':checked');
+			console.log("checkbox: "+checkbox);
+			if(!checkbox){
+					Swal.fire({
+						title:"ToGater 이용약관에 동의해주세용.",
+						icon:"warnig"
+						});
+					return false;
+			}
 			var emailcheck = $("#email_id").val();
 			emailcheck.trim();
 			let check = /\S+@\S+\.\S+/;
 			if(emailcheck != null){
 				if (!check.test(emailcheck)) {
-					alert("이메일을 제대로된 형식으로 입력해주세요.");
+					Swal.fire({
+						title:"이메일을 제대로된 형식으로 입력해주세요.",
+						icon:"warnig"
+						});
 					$("#email_id").val("");
 					return false;
 				}
@@ -70,9 +203,29 @@
 			var pwcheck = $("#pwd_id").val();
 			var pwcheck2 = $("#pwd2_id").val();
 			if(pwcheck!=pwcheck2){
-				alert("비밀번호가 다릅니다");
+				Swal.fire({
+					title:"비밀번호가 다릅니다",
+					icon:"warning"
+					})
 				return false;
 			}
+			var category=$('#CATEGORY_FIRST').val();
+			if(category==0){ //<-- 첫번쨰 벨류에다가 0을 넣었으니까 0으로 검사해서 0이면 안선택한거
+				Swal.fire({
+					title:"카테고리를 선택해주세요",
+					icon:"warning"
+					});
+				return false;
+			}
+			var category=$('#CATEGORY_SECOND').val();
+			if(category==0){ //<-- 첫번쨰 벨류에다가 0을 넣었으니까 0으로 검사해서 0이면 안선택한거
+				Swal.fire({
+					title:"카테고리를 선택해주세요",
+					icon:"warning"
+					});
+				return false;
+			}
+			
 			$.ajax({
 				url: "../member/join.json",
 				type: "POST",
@@ -80,14 +233,24 @@
 				success: function(data){
 					console.log(data);
 					if(data==0){
-						alert("회원가입성공");
-						location="../";
+						Swal.fire({
+							   title:"환영합니다!",
+							   icon:"success"
+							}).then((result)=>{
+								location="../";
+							});
 					}else if(data==1){
-						alert("이미 가입된 번호입니다");
+						Swal.fire({
+							title:"이미 가입된 번호입니다",
+							icon:"error"
+							});
 					}else if(data==2){
-						alert("이미 가입된 이메일입니다.");
+						Swal.fire({
+							title:"이미 가입된 이메일입니다.",
+							icon:"error"
+							});
+						}
 					}
-				}
 			});
 		});
 	});
@@ -115,7 +278,7 @@
                         $("#birth_id").val(kakaobirth);
                         if(kakaogender=="male") $("#gender1_id").prop('checked', true);
                         if(kakaogender=="female") $("#gender2_id").prop('checked', true);
-                  		alert("이름: "+kakaoname+",이메일: "+kakaoemail+",생일 : "+kakaobirth+",성별 : "+kakaogender);
+                  		//alert("이름: "+kakaoname+",이메일: "+kakaoemail+",생일 : "+kakaobirth+",성별 : "+kakaogender);
                       //alert(res.kakao_account.email + ' (' + res.properties['nickname'] + ') 님 환영합니다.');
                               
                     }
@@ -124,19 +287,23 @@
           });
       }
       </script>
+      <script>
+		window.history.forward();
+	 	function noBack(){window.history.forward();}
+	</script>
   </head>
 
-  <body>
+  <body onload="noBack();categorys(1)" onpageshow="if(event.persisted) noBack();">
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
       <div class="container d-flex align-items-center">
-        <h1 class="logo me-auto"><a href="index.html">Mentor</a></h1>
+        <h1 class="logo me-auto"><a href="/">Mentor</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
         <nav id="navbar" class="navbar order-last order-lg-0">
           <ul>
-            <li><a class="active" href="index.html">Home</a></li>
+            <li><a class="active" href="/">Home</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="myGroup.html">나의 모임</a></li>
             <!--로그인시에만 보이게 하기-->
@@ -255,7 +422,8 @@
                               id="birth_id"
                               class="form-control"
                               value=""
-                              
+                              min="1985-01-01"
+                              max="2003-12-31"
                             />
                           </div>
                         </div>
@@ -302,21 +470,15 @@
                               class="form-control"
                               maxlength="11"
                               value=""
+                              oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                             />
                           </div>
                         </div>
-                        <div class="d-flex flex-row align-items-center mb-0">
+                        <div  id="selectdiv1" class="d-flex flex-row align-items-center mb-0">
                           <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                          <div class="form-outline flex-fill mb-2">
-                            <label class="form-label mb-0" for="form3Example4cd"
-                              >관심사</label
-                            >
-                            <select class="form-control" name="category">
-                              <option>선택</option>
-                              <option value="운동">운동</option>
-                              <option value="공부">공부</option>
-                              <option value="놀기">놀기</option>
-                            </select>
+                          <div id="selectdiv2" class="form-outline flex-fill mb-2">
+                           <!-- 카테고리 붙이기 -->
+                          	
                           </div>
                         </div>
                         <div class="d-flex flex-row align-items-center mb-0">
@@ -340,7 +502,7 @@
                             <label class="form-label mb-0" for="form3Example4cd"
                               >관심지역</label
                             >
-                            <select class="form-control" name="pfr_loc">
+                            <select  class="form-control" name="pfr_loc">
                               <option>선택</option>
                               <option value="서울">서울</option>
                               <option value="경기">경기</option>
@@ -393,7 +555,7 @@
                             class="form-check-input me-2"
                             type="checkbox"
                             value=""
-                            id="form2Example3c"
+                            id="checkbox"
                           />
                           <label class="form-check-label" for="form2Example3">
                             <a href="#!">ToGather 이용약관</a>에

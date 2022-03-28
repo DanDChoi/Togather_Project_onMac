@@ -1,7 +1,7 @@
 package team1.togather.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,8 @@ public class WishListServiceImpl implements WishListService {
 	private WishListMapper wishmapper;
 	
 	@Override
-	public ArrayList<WishList> getWishLists(Long usermnum) {
-		return wishmapper.getWishLists(usermnum);
+	public List<WishList> getWishLists(Long mnum) {
+		return wishmapper.getWishLists(mnum);
 	}
 
 	@Override
@@ -34,6 +34,10 @@ public class WishListServiceImpl implements WishListService {
 		wishMap.put("mnum", usermnum);
 		wishMap.put("gseq", gseq);
 		wishmapper.deleteWishList(wishMap);
+	}
+	@Override
+	public Integer wishListFlagCheck(Map<String,Long> map) {
+		return wishmapper.wishListFlagCheck(map);
 	}
 
 }

@@ -18,6 +18,8 @@ public class Member {
 	private String pwd;
 	private String email;
 	private String phone;
-	private String category;
+	private String category_first;
+	private String category_second;
+	private String category_third;
 	private long athur;
 }

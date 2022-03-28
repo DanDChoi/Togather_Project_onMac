@@ -54,11 +54,6 @@
 	<select id="pageCount" resultType="Integer" >
 			select count(*) from QA
 	</select>
-	<select id="listPage" resultType="QA" parameterType="Integer">
-	select * from (select ROWNUM rnum, aa.* from (select * from QA order by qseq desc) aa)
-   		where rnum between #{page} and #{page}+10
-	</select>
-	
 	<!-- 페이지정보를 지정한 크기만큼 가져오기 -->
 	<select id="listPageCri" resultType="QA" parameterType="BoardCriteria">
 		<![CDATA[
