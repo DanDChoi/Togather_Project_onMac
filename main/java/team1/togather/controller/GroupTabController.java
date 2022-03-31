@@ -83,10 +83,12 @@ public class GroupTabController {
 		MultipartFile uploadFile = groupTab.getUploadFile();
 		if(!uploadFile.isEmpty()) {
 			String ofname = uploadFile.getOriginalFilename(); //파일의 원본이름
+			int idx = ofname.lastIndexOf("."); //파일명까지 자르기
+			String ofheader = ofname.substring(0, idx);
 			String ext = FilenameUtils.getExtension(ofname); //파일의 확장자 구하기
 			
 			UUID uuid = UUID.randomUUID(); //UUID 구하기 -> 뭔지 잘 모르겠음. //아마 저장할 때 이름 겹치지않게 하려고 랜덤으로 이름을 부여하는 용도?...
-			fname = ofname + uuid + "." + ext;
+			fname = ofheader + uuid + "." + ext;
 			try {
 				uploadFile.transferTo(new File(Path.FILE_STORE + fname));
 			}catch(IOException ie) {}
