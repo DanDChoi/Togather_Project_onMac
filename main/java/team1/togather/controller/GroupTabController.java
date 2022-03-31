@@ -183,14 +183,16 @@ public class GroupTabController {
 	}
 	@PostMapping("groupQuit")
 	@ResponseBody
-	public String groupQuit(MemInGroup memInGroup,long gseq) {
+	public String groupQuit(MemInGroup memInGroup,long gseq, long mnum) {
 		List<Map<String,String>> memInGroupName = groupTabService.memInGroupName(memInGroup);
 		groupTabService.groupQuit(memInGroup);
+		groupTabService.quitGroupDeleteGathering(mnum); //대현추가 (그룹탈퇴시 본인이 만든 정모 삭제/ 파라미터 mnum 추가)
 		Long groupMemberCount = groupTabService.groupMemberCount(gseq);
 		String result="";
 		if(groupMemberCount==0) {
 			groupTabService.memInGroupDelete(gseq);
 			groupTabService.deleteS(gseq);
+
 			result="0";
 		}else {
 			result="1";

@@ -14,8 +14,7 @@ public interface GatheringMapper {
 	void ga_update(Gathering gathering);
 	void ga_delete(long ga_seq);
 	List<Gathering> ga_selectByGseq(long gseq); //group에 속한 gathering목록
-	
-	List<Member> selectAllname();
+
 	Long gatheringMemberCount(long ga_seq);
 	Member gatheringCreaterName(long ga_seq); //정모 만든사람 이름 구하는 로직
 	void memInGathering(MemInGathering memInGathering);

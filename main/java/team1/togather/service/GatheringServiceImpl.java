@@ -51,10 +51,6 @@ public class GatheringServiceImpl implements GatheringService {
 		return list;
 	}
 	@Override
-	public List<Member> selectAllname(){
-		return groupTabMapper.selectAllname();
-	}
-	@Override
 	public Long gatheringMemberCount(long ga_seq) {
 		return gatheringMapper.gatheringMemberCount(ga_seq);
 	}

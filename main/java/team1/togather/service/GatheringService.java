@@ -14,8 +14,7 @@ public interface GatheringService {
 	void ga_updateS(Gathering gathering);
 	void ga_deleteS(long ga_seq);
 	List<Gathering> ga_selectByGseqS(long gseq);
-	
-	List<Member> selectAllname();
+
 	Long gatheringMemberCount(long ga_seq);
 	Member gatheringCreaterName(long ga_seq); //정모 만든사람 이름 구하는 로직
 	void memInGathering(MemInGathering memInGathering);

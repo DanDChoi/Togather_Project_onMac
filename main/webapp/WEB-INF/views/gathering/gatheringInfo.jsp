@@ -67,32 +67,32 @@
 			  cancelButtonColor: '#d33',
 			  confirmButtonText: 'Yes'
 			}).then((result) => {
-				console.log(result.isConfirmed);
-				if(${gatheringMemberCount} >= ${gatheringInfo.ga_limit}){
-					Swal.fire({
-						title: '정모 참여 인원이 다 찼습니다',
-						icon: 'warning',
-						showCancelButton: false,
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: 'Yes'
-					});
-					return false;
-				}else if (result.isConfirmed) {
-				var mnum = ${m.mnum};
-	  			var ga_seq = ${gatheringInfo.ga_seq};
-	  			var result = {"mnum":mnum,"ga_seq":ga_seq};
-		  		$(function(){
-  				$.ajax({
-	   					url: "memInGathering.json",
-	   					type: "POST",
-	   					data: result,
-	   					success: function(data){
-	   					}
-  				});
-  				location.reload(); 
-		  		});
-		  		
-			  }  			  
+				if(result.isConfirmed){ 
+					if(${gatheringMemberCount} >= ${gatheringInfo.ga_limit}){
+						Swal.fire({
+							title: '정모 참여 인원이 다 찼습니다',
+							icon: 'warning',
+							showCancelButton: false,
+							confirmButtonColor: '#3085d6',
+							confirmButtonText: 'Yes'
+						});
+						return false;
+					}else{
+					var mnum = ${m.mnum};
+		  			var ga_seq = ${gatheringInfo.ga_seq};
+		  			var result = {"mnum":mnum,"ga_seq":ga_seq};
+			  		$(function(){
+	  				$.ajax({
+		   					url: "memInGathering.json",
+		   					type: "POST",
+		   					data: result,
+		   					success: function(data){
+		   					}
+	  				});
+	  				location.reload(); 
+			  		});
+				  }
+				}
 			});
     	}
 	
