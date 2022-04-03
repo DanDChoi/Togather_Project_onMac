@@ -154,8 +154,10 @@ public class GroupTabController {
 			String ofheader = ofname.substring(0, idx);
 			String ext = FilenameUtils.getExtension(ofname); //파일의 확장자 구하기
 			
-			UUID uuid = UUID.randomUUID(); 
-			fname = ofheader + uuid + "." + ext;
+			UUID uuid = UUID.randomUUID(); //(대현수정 4/3) uuid 5글자까지 자르기
+			String randomfname = uuid.toString();
+			randomfname = randomfname.substring(0, 5);
+			fname = ofheader + randomfname + "." + ext;
 			try {
 				uploadFile.transferTo(new File(Path.FILE_STORE + fname));
 			}catch(IOException ie) {}
