@@ -645,7 +645,15 @@
 	                  <p>
 				      		${groupList.gintro}
 	                  </p>
-	                  <p><i class="fa fa-map-marker-alt text-primary me-2"></i>${groupList.gloc}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa fa-map-marker-alt text-primary me-2"></i>${groupList.gloc}
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-danger mb-1">찜 하기</button>
+                                <!--  <button type="button" class="btn btn-danger mb-1">찜 취소</button>  -->
+                            </div>
+                        </div>
 	                  <div
 	                    class="trainer d-flex justify-content-between align-items-center"
 	                  >
