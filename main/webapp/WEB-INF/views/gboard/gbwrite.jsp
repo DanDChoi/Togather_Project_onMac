@@ -107,12 +107,12 @@
       
       
       <section
-        class="vh-100"
+        class="h-auto"
         style="background-color: #eee; box-sizing: content-box"
       >
-        <div class="container h-100" data-aos="flip-down">
+        <div class="container h-auto" data-aos="flip-down">
           <div
-            class="row d-flex justify-content-center align-items-center h-100"
+            class="row d-flex justify-content-center align-items-center h-auto"
           >
             <div class="col-lg-12 col-xl-11">
               <div class="card text-black" style="border-radius: 25px">

@@ -25,11 +25,15 @@
 		<typeAlias alias="FaqPageMaker" type="team1.togather.domain.FaqPageMaker"/>
 		<typeAlias alias="Notification" type="team1.togather.domain.Notification"/>
 		<typeAlias alias="NotificationCriteria" type="team1.togather.domain.NotificationCriteria"/>
-		<typeAlias alias="GroupTabBoard" type="team1.togather.domain.GroupTabBoard" />
 		<typeAlias alias="IndexCriteria" type="team1.togather.domain.IndexCriteria" />
 		<typeAlias alias="IndexPage" type="team1.togather.domain.IndexPage" />
 		<typeAlias alias="nPageMaker" type="team1.togather.domain.nPageMaker" />
 		<typeAlias alias="PageMaker" type="team1.togather.domain.PageMaker" />
+		<typeAlias alias="GBoard" type="team1.togather.domain.GBoard" />
+		<typeAlias alias="GBoardCriteria" type="team1.togather.domain.GBoardCriteria" />
+		<typeAlias alias="GBPageMaker" type="team1.togather.domain.GBPageMaker" />
+		<typeAlias alias="GBReply" type="team1.togather.domain.GBReply" />
+
 	</typeAliases>
    <!-- 
    <mappers>

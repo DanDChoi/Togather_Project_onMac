@@ -251,12 +251,42 @@
 	   				});
 	   			});
     	}
-
     	function groupMember(){
     		location="../gboard/gblistPage?gseq=${groupInfo.gseq}&mnum=${memInGroupName.MNUM}";
     	}
     	</script>
     </c:forEach>
+    <!-- 04/05 대현추가 (사진첩 멤버체크)-->
+    <c:forEach items="${memInGroupName}" var="memInGroupName">
+    <script type="text/javascript">
+    function galleryCheck(){
+    		var mnum = ${m.mnum};
+  			var gseq = ${groupInfo.gseq};
+  			var result = {"mnum":mnum,"gseq":gseq};
+	   			$(function(){
+    				$.ajax({
+	   					url: "galleryCheck.json",
+	   					type: "POST",
+	   					data: result,
+	   					success: function(data){
+	   						if(data!=3){
+	   							galleryMember();
+	   						}else {
+	   							Swal.fire({
+		  							  title: "가입회원만 조회가 가능합니다.",
+		  							  icon: "error"
+	   							});
+	   						}
+	   					}
+	   				});
+	   			});
+    	}
+    	function galleryMember(){
+    		location="groupGallery.do?gseq=${groupInfo.gseq}&mnum=${memInGroupName.MNUM}";
+    	}
+    	</script>
+    </c:forEach>
+    <!-- 04/05 대현추가 끝-->
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script>
         Kakao.init('11400a9267d93835389eb9255fcaad0b');
@@ -353,7 +383,7 @@
         		<a class="nav-link active" aria-current="page" href="#">정보</a>
         	</li>
         	<li class="nav-item">
-        		<a class="nav-link" href="#">사진첩</a>
+        		<a class="nav-link" href="javascript:galleryCheck()">사진첩</a>
         	</li>
         	<li class="nav-item">
         		<a class="nav-link" href="javascript:groupMembercheck()">게시판</a>

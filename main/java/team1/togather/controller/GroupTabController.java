@@ -229,4 +229,23 @@ public class GroupTabController {
 			return grade;
 		}
 	}
+	//04.05 대현추가 (사진첩)
+	@PostMapping("galleryCheck")
+	@ResponseBody
+	public Long galleryCheck(MemInGroup memInGroup) {
+		Long grade = groupTabService.grade(memInGroup);
+		if(grade == null) {
+			return (long)3;
+		}else {
+			return grade;
+		}
+	}
+	@GetMapping("groupGallery.do")
+	public ModelAndView groupGallery(long gseq) {
+		GroupTab groupGallery = groupTabService.selectByGSeqS(gseq);
+		ModelAndView mv = new ModelAndView("groupTab/groupGallery", "groupGallery", groupGallery);
+
+		return mv;
+	}
+
 }

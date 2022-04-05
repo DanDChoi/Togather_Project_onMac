@@ -138,31 +138,29 @@
                         <c:forEach items="${gbrlist}" var="gbreply">	
                         <div class="comments-grids">
                             <!-- 여기부터 루프 -->
-                            
-						
-							<div  >
                             <div id="middleform" class="media-grid">
                                 <div class="media">
                                     <a class="comment-img" href="#url"><img src="/assets/images/team1.jpg"
-                                            class="img-responsive" width="100px" alt="placeholder image"></a>
-                                    <div id="innerreplyform"  class="media-body comments-grid-right">
+                                                                            class="img-responsive" width="100px" alt="placeholder image"></a>
+                                    <div id="innerreplyform"  class="media-body comments-grid-right" style="width:600px">
                                         <h5>${gbreply.mname }</h5>
                                         <ul class="p-0 comment">
                                             <li class=""><fmt:formatDate value="${gbreply.rdate}" pattern="yyyy-MM-dd (E) HH:mm" /></li>
                                         </ul>
-                                        <p>${gbreply.gbrcontent}</p>
-                                         
-                                        <c:if test = "${ m.mnum eq gbreply.mnum}" >     
-                                        		<ul class="p-0 comment">   
-												<a href='../gbreply/gbrupdate.do?gbnum=${gboard.gbnum}&gbrseq=${gbreply.gbrseq}&gbrcontent=${gbreply.gbrcontent}'>수정</a>
-												<a href='../gbreply/gbrdel.do?gbnum=${gboard.gbnum}&gbrseq=${gbreply.gbrseq}'>삭제</a>
-												</ul>
-											</c:if>
+                                        <p style="word-break:break-word">${gbreply.gbrcontent}</p> <!-- 댓글 컨텐츠 -->
+                                        <div style="align-items: flex-end"> <!-- 수정 삭제 버튼부 -->
+                                            <c:if test = "${ m.mnum eq gbreply.mnum}" >
+                                                <a style="color:blue" href='../gbreply/gbrupdate.do?gbnum=${gboard.gbnum}&gbrseq=${gbreply.gbrseq}&gbrcontent=${gbreply.gbrcontent}'>수정</a>
+                                                <a style="color:blue" href='../gbreply/gbrdel.do?gbnum=${gboard.gbnum}&gbrseq=${gbreply.gbrseq}'>삭제</a>
 
-                                    </div> 
+                                            </c:if>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                            </div>
+
+
 						
                         </div>
                         </c:forEach>

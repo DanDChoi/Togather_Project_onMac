@@ -157,13 +157,13 @@
         <div class="container" data-aos="fade-up">
           <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
-              <a class="nav-link" href="#">정보</a>
+              <a class="nav-link" href="../groupTab/groupInfo.do?gseq=${cri.gseq}&mnum=${m.mnum}">정보</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">사진첩</a>
+              <a class="nav-link" href="../groupTab/groupGallery.do?gseq=${cri.gseq}&mnum=${m.mnum}">사진첩</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">게시판</a>
+              <a class="nav-link active" aria-current="page" href="">게시판</a>
             </li>
           </ul>
           <div class="button_group">
