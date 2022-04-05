@@ -645,6 +645,7 @@
 	                  <p>
 				      		${groupList.gintro}
 	                  </p>
+                        <!-- 4/4 찜버튼 추가 -->
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <i class="fa fa-map-marker-alt text-primary me-2"></i>${groupList.gloc}
