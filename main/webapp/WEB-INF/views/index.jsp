@@ -625,7 +625,7 @@
           <div id="popularSection" class="row" data-aos="zoom-in" data-aos-delay="100">
           	  <c:forEach var="groupList" items="${list}" varStatus="status" >
           	  	
-	            <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+	            <div class="col-lg-4 col-md-6 d-flex align-items-stretch mb-4">
 	              <div class="course-item">
 	                <img
 	                  src="/assets/img/groupImages/${groupList.fname }"

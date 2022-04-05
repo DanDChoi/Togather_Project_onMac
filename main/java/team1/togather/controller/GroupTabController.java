@@ -156,8 +156,9 @@ public class GroupTabController {
 			
 			UUID uuid = UUID.randomUUID(); //(대현수정 4/3) uuid 5글자까지 자르기
 			String randomfname = uuid.toString();
-			randomfname = randomfname.substring(0, 5);
-			fname = ofheader + randomfname + "." + ext;
+			String rfname = randomfname.substring(0, 5);
+			log.warn("#randomfname: " + rfname);
+			fname = ofheader + rfname + "." + ext;
 			try {
 				uploadFile.transferTo(new File(Path.FILE_STORE + fname));
 			}catch(IOException ie) {}
@@ -217,4 +218,15 @@ public class GroupTabController {
 				return (long)1;
 			}
 		}
+	//04.04범수추가
+	@PostMapping("groupMembercheck")
+	@ResponseBody
+	public Long groupMembercheck(MemInGroup memInGroup) {
+		Long grade = groupTabService.grade(memInGroup);
+		if(grade == null) {
+			return (long)3;
+		}else {
+			return grade;
+		}
+	}
 }

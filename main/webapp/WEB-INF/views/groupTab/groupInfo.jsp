@@ -227,6 +227,36 @@
     		location="../gathering/gatheringCreate.do?gseq=${groupInfo.gseq}&mnum=${m.mnum}";
     	}
     </script>
+    <c:forEach items="${memInGroupName}" var="memInGroupName">
+      <script type="text/javascript">
+    function groupMembercheck(){
+    		var mnum = ${m.mnum};
+  			var gseq = ${groupInfo.gseq};
+  			var result = {"mnum":mnum,"gseq":gseq};
+	   			$(function(){
+    				$.ajax({
+	   					url: "groupMembercheck.json",
+	   					type: "POST",
+	   					data: result,
+	   					success: function(data){
+	   						if(data!=3){
+	   							groupMember();
+	   						}else {
+	   							Swal.fire({
+		  							  title: "가입회원만 조회가 가능합니다.",
+		  							  icon: "error"
+	   							});
+	   						}
+	   					}
+	   				});
+	   			});
+    	}
+
+    	function groupMember(){
+    		location="../gboard/gblistPage?gseq=${groupInfo.gseq}&mnum=${memInGroupName.MNUM}";
+    	}
+    	</script>
+    </c:forEach>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script>
         Kakao.init('11400a9267d93835389eb9255fcaad0b');
@@ -326,7 +356,7 @@
         		<a class="nav-link" href="#">사진첩</a>
         	</li>
         	<li class="nav-item">
-        		<a class="nav-link" href="#">게시판</a>
+        		<a class="nav-link" href="javascript:groupMembercheck()">게시판</a>
         	</li>
         </ul> 
           <div class="row">

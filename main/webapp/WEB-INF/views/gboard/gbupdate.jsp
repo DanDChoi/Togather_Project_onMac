@@ -1,13 +1,13 @@
-<%@ page contentType="text/html;charset=utf-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ page language="java" contentType="text/html; charset=utf-8" import="java.util.*, team1.togather.domain.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Togather</title>
+    <title>Pricing - Mentor Bootstrap Template</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -29,15 +29,6 @@
       rel="stylesheet"
     />
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
-
-    <link
       href="/assets/vendor/bootstrap-icons/bootstrap-icons.css"
       rel="stylesheet"
     />
@@ -47,26 +38,28 @@
 
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet" />
-    <script>
-		window.history.forward();
-	 	function noBack(){window.history.forward();}
-	</script>
-    
+
+    <!-- =======================================================
+  * Template Name: Mentor - v4.7.0
+  * Template URL: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
   </head>
 
-  <body onload="noBack();" onpageshow="if(event.persisted) noBack();" onunload="">
+  <body>
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
       <div class="container d-flex align-items-center">
-        <h1 class="logo me-auto"><a href="../">Togather</a></h1>
+        <h1 class="logo me-auto"><a href="../../">Togather</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
-        <!-- <a href="index.html" class="logo me-auto"><img src="/assets/img/logo.png" alt="" class="img-fluid"></a>-->
+        <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
         <nav id="navbar" class="navbar order-last order-lg-0">
           <ul>
-            <li><a class="active" href="../">Home</a></li>
+            <li><a class="active" href="index.html">Home</a></li>
             <li><a href="about.html">About</a></li>
-            <li><a href="myGroup.do?mnum=${m.mnum }">나의 모임</a></li>
+            <li><a href="myGroup.html">나의 모임</a></li>
             <!--로그인시에만 보이게 하기-->
             <li><a href="boardMain.html">게시판</a></li>
             <li>
@@ -85,41 +78,32 @@
               <ul>
                 <li><a href="notice.html">공지사항</a></li>
                 <li><a href="FAQ.html">자주묻는 질문</a></li>
-                <li><a href="qa">Q&A</a></li>
+                <li><a href="QA.html">Q&A</a></li>
                 <li><a href="contact.html">Contact</a></li>
               </ul>
             </li>
-            <c:choose>
-           		<c:when test="${m eq null}">
-            		<li><a href="member/login.do">로그인 ${sessionScope.m} </a></li>
-        		</c:when>
-          		<c:otherwise>
-            		<li><a href="javascript:void(0);" onclick="signout();">로그아웃</a></li>
-            	</c:otherwise>
-         	</c:choose>
+            <li><a href="login.html">로그인</a></li>
           </ul>
           <i class="bi bi-list mobile-nav-toggle"></i>
         </nav>
         <!-- .navbar -->
-		<c:choose>
-           		<c:when test="${m eq null}">
-		        	<a href="member/joinform.do" class="get-started-btn">회원가입</a>
-		        </c:when>
-		        <c:otherwise>
-        			<a href="groupTab/groupCreate.do" class="get-started-btn">모임만들기</a>
-        		</c:otherwise>
-         </c:choose>
+        <!--로그인전에는 회원가입만 보이고 로그인하면 모임만들기만 보이게 하는건 어떤지??-->
+        <a href="join.html" class="get-started-btn">회원가입</a>
+        <a href="groupCreate.html" class="get-started-btn">모임만들기</a>
       </div>
     </header>
     <!-- End Header -->
+
     <main id="main">
       <!-- ======= Breadcrumbs ======= -->
       <div class="breadcrumbs" data-aos="fade-in">
         <div class="container">
-          <h1>모임 만들기</h1>
+          <h1>게시판 글쓰기</h1>
         </div>
       </div>
+      <!-- End Breadcrumbs -->
 
+      <!-- ======= Pricing Section ======= -->
       <section
         class="vh-100"
         style="background-color: #eee; box-sizing: content-box"
@@ -133,139 +117,90 @@
                 <div class="card-body p-md-5">
                   <div class="row justify-content-center">
                     <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                      <!--모임지역/이름/모임소개/관심사/정원/모임사진-->
-                      <form class="mx-1 mx-md-4" method="post" action="groupCreate.do?mnum=${m.mnum }" enctype="multipart/form-data">
+                      <!--거주지/관심지역/이름/생년월일/비번/비번확인/전화번호/성별-->
+                      <form class="mx-1 mx-md-4" name="gboard" method="post" action="gbupdate.do?gbnum=${gboard.gbnum}">
                         <div class="d-flex flex-row align-items-center mb-0">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-2">
                             <label class="form-label mb-0" for="form3Example1c"
-                              >모임지역</label
-                            >
-	                          <div class="col-md-4">
-				                <select class="form-select border-0 py-3" name="gloc" required="required">
-				                  <option selected disabled>지역</option>
-				                  <option value="서울">서울</option>
-				                  <option value="경기">경기</option>
-				                  <option value="인천">인천</option>
-				                  <option value="강원">강원</option>
-				                  <option value="충북">충북</option>
-				                  <option value="충남">충남</option>
-				                  <option value="전북">전북</option>
-				                  <option value="전남">전남</option>
-				                  <option value="경북">경북</option>
-				                  <option value="경남">경남</option>
-				                  <option value="제주">제주</option>
-				                </select>
-				              </div>
-                          </div>
-                        </div>
-
-						<div class="d-flex flex-row align-items-center mb-0">
-                          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                          <div class="form-outline flex-fill mb-2">
-                            <label class="form-label mb-0" for="form3Example1c"
-                              >모임이름</label
+                              >작성자</label
                             >
                             <input
                               type="text"
+                              name="writer"
+                              readonly value="${gboard.mname}"
+                              disabled="disabled"
                               id="form3Example1c"
                               class="form-control"
-                              name="gname"
                             />
                           </div>
                         </div>
                         
+                        <div class="d-flex flex-row align-items-center mb-0">
+                          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                          <div class="form-outline flex-fill mb-2">
+                            <label class="form-label mb-0" for="form3Example1c"
+                              >제목</label
+                            >
+                            <input
+                              type="text"
+                              name="gbtitle"
+                              value="${gboard.gbtitle}"
+                              id="form3Example1c"
+                              class="form-control"
+                              required=""
+                            />
+                          </div>
+                        </div>
+
+						
 						<div class="d-flex flex-row align-items-center mb-0">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-2">
                            <label class="form-label mb-0" for="form3Example4c"
-                            >모임소개</label
+                            >글내용</label
 							  >
 							  <textarea
-								name="gintro"
-								placeholder="글을 작성해주세요"
-								maxlength="2000"
+								name="gbcontent"
+								placeholder="글을 작성해주세요" 
+								value="${gboard.gbcontent}"
+								row="10"
 								cols="53"
 								id="form3Example4c"
 								class="form-control"
+								required=""
 							  ></textarea>
                           </div>
                         </div>
-						
-						<div class="d-flex flex-row align-items-center mb-0">
-                          <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                          <div class="form-outline flex-fill mb-2">
-                            <label class="form-label mb-0" for="form3Example4cd"
-                              >관심사</label
-                            >
-                            <div class="col-md-4">
-				                <select class="form-select border-0 py-3" name="interest">
-				                  <option selected disabled>관심사</option>
-				                  <option value="아웃도어/여행">아웃도어/여행</option>
-				                  <option value="외국/언어">외국/언어</option>
-				                  <option value="음악/악기">음악/악기</option>
-				                  <option value="차/오토바이">차/오토바이</option>
-				                  <option value="요리/제조">요리/제조</option>
-				                  <option value="업종/직무">업종/직무</option>
-				                  <option value="문화/공연/축제">문화/공연/축제</option>
-				                  <option value="공예/만들기">공예/만들기</option>
-				                  <option value="댄스/무용">댄스/무용</option>
-				                  <option value="봉사활동">봉사활동</option>
-				                  <option value="인문학/책/글">인문학/책/글</option>
-				                  <option value="사진/영상">사진/영상</option>
-				                  <option value="게임/오락">게임/오락</option>
-				                  <option value="반려동물">반려동물</option>
-				                  <option value="자유주제">자유주제</option>
-				                </select>
-				            </div>
-                          </div>
-                        </div>
                         
                         <div class="d-flex flex-row align-items-center mb-0">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-2">
                             <label class="form-label mb-0" for="form3Example1c"
-                              >정원</label
+                              ></label
                             >
                             <input
-                              type="number"
+                              type="hidden"
+                              name="gbnum"
+                              value="${gboard.gbnum}"
                               id="form3Example1c"
                               class="form-control"
-                              name="limit"
-                              min="2"
-                              max="100"
-                              placeholder="2~100"
                             />
                           </div>
                         </div>
-                        
-                        <div class="d-flex flex-row align-items-center mb-0">
-                          <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                          <div class="form-outline flex-fill mb-2">
-                            <label class="form-label mb-0" for="form3Example1c"
-                              >모임대표사진</label
-                            >
-                            <input
-                              type="file"
-                              id="form3Example1c"
-                              class="form-control"
-                              name="uploadFile"
-                              required
-                            />
-                          </div>
-                        </div>
-                        
+
                         <div
                           class="d-flex justify-content-center mx-4 mb-3 mb-lg-4"
                         >
                           <button
                             type="submit"
+                            
                             class="btn btn-success"
                             style="margin-right: 30px"
                           >
-                            개설
+                            수정
                           </button>
-                          <button type="button" class="btn btn-secondary">
+                          <button type="button"  onclick="location.href='gbcontent.do?gbnum=${gboard.gbnum}'" class="btn btn-secondary">
                             취소
                           </button>
                         </div>
@@ -278,22 +213,23 @@
           </div>
         </div>
       </section>
+      <!-- End Pricing Section -->
     </main>
     <!-- End #main -->
 
     <!-- ======= Footer ======= -->
-    <footer id="footer">
+    <footer id="footer" style="padding-top: 50px">
       <div class="footer-top">
         <div class="container">
           <div class="row">
             <div class="col-lg-3 col-md-6 footer-contact">
-              <h3>Togather</h3>
+              <h3>Mentor</h3>
               <p>
-                서울시 금천구 <br />
-                가산 디지털 2로 123<br />
-                월드메르디앙 2차 <br /><br />
-                <strong>Phone:</strong> +82 2 1234 1234<br />
-                <strong>Email:</strong> service@togather.com<br />
+                A108 Adam Street <br />
+                New York, NY 535022<br />
+                United States <br /><br />
+                <strong>Phone:</strong> +1 5589 55488 55<br />
+                <strong>Email:</strong> info@example.com<br />
               </p>
             </div>
 
@@ -301,12 +237,10 @@
               <h4>Useful Links</h4>
               <ul>
                 <li>
-                  <i class="bx bx-chevron-right"></i>
-                  <a href="../">Home</a>
+                  <i class="bx bx-chevron-right"></i> <a href="#">Home</a>
                 </li>
                 <li>
-                  <i class="bx bx-chevron-right"></i>
-                  <a href="about.html">About us</a>
+                  <i class="bx bx-chevron-right"></i> <a href="#">About us</a>
                 </li>
                 <li>
                   <i class="bx bx-chevron-right"></i> <a href="#">Services</a>
@@ -326,28 +260,31 @@
               <h4>Our Services</h4>
               <ul>
                 <li>
-                  <i class="bx bx-chevron-right"></i>
-                  <a href="notice.html">공지사항</a>
+                  <i class="bx bx-chevron-right"></i> <a href="#">Web Design</a>
                 </li>
                 <li>
                   <i class="bx bx-chevron-right"></i>
-                  <a href="FAQ.html">자주 묻는 질문</a>
+                  <a href="#">Web Development</a>
                 </li>
                 <li>
                   <i class="bx bx-chevron-right"></i>
-                  <a href="QA.html">Q & A</a>
+                  <a href="#">Product Management</a>
+                </li>
+                <li>
+                  <i class="bx bx-chevron-right"></i> <a href="#">Marketing</a>
                 </li>
                 <li>
                   <i class="bx bx-chevron-right"></i>
-                  <a href="contact.html">Contact</a>
+                  <a href="#">Graphic Design</a>
                 </li>
               </ul>
             </div>
 
             <div class="col-lg-4 col-md-6 footer-newsletter">
-              <h4>뉴스레터 구독하기</h4>
+              <h4>Join Our Newsletter</h4>
               <p>
-                최신뉴스 및 프로모션 행사에 대한 안내메일을 받으실 수 있습니다.
+                Tamen quem nulla quae legam multos aute sint culpa legam noster
+                magna
               </p>
               <form action="" method="post">
                 <input type="email" name="email" /><input
@@ -363,8 +300,15 @@
       <div class="container d-md-flex py-4">
         <div class="me-md-auto text-center text-md-start">
           <div class="copyright">
-            &copy; Copyright <strong><span>Togather</span></strong
+            &copy; Copyright <strong><span>Mentor</span></strong
             >. All Rights Reserved
+          </div>
+          <div class="credits">
+            <!-- All the links in the footer should remain intact. -->
+            <!-- You can delete the links only if you purchased the pro version. -->
+            <!-- Licensing information: https://bootstrapmade.com/license/ -->
+            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/ -->
+            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
           </div>
         </div>
         <div class="social-links text-center text-md-right pt-3 pt-md-0">
@@ -377,22 +321,21 @@
       </div>
     </footer>
     <!-- End Footer -->
-
-    <div id="preloader"></div>
-    <a
-      href="#"
-      class="back-to-top d-flex align-items-center justify-content-center"
-      ><i class="bi bi-arrow-up-short"></i
-    ></a>
-
-    <!-- Vendor JS Files -->
-    <script src="/assets/vendor/purecounter/purecounter.js"></script>
-    <script src="/assets/vendor/aos/aos.js"></script>
-    <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/vendor/swiper/swiper-bundle.min.js"></script>
-    <script src="/assets/vendor/php-email-form/validate.js"></script>
-
-    <!-- Template Main JS File -->
-    <script src="/assets/js/main.js"></script>
   </body>
+  <div id="preloader"></div>
+  <a
+    href="#"
+    class="back-to-top d-flex align-items-center justify-content-center"
+    ><i class="bi bi-arrow-up-short"></i
+  ></a>
+
+  <!-- Vendor JS Files -->
+  <script src="/assets/vendor/purecounter/purecounter.js"></script>
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="/assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="/assets/js/main.js"></script>
 </html>
