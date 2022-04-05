@@ -39,4 +39,6 @@ public interface GroupTabService {
 	//03.26 대현 추가
 	void quitGroupDeleteGathering(long mnum);//모임 탈퇴시 만들어둔 정모 모두 삭제
 	Long gatheringCountInGroup(long gseq);//만들어진 정모 갯수
+	//04.05
+	void galleryUpload(GroupTab groupTab);
 }

@@ -39,7 +39,9 @@ public interface GroupTabMapper {
 	List<String> NoCategoryNames(IndexCriteria cri);
 	
 	//03.26 대현추가
-		void quitGroupDeleteGathering(long mnum);	
-		Long gatheringCountInGroup(long gseq);
+	void quitGroupDeleteGathering(long mnum);
+	Long gatheringCountInGroup(long gseq);
+	//04.05 대현추가
+	void galleryUpload(GroupTab groupTab);
 }
 

@@ -56,177 +56,15 @@
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
     <script type="text/javascript">
+    function galleryUpload() {
+        var mnum = ${m.mnum};
+        var gseq = ${groupGallery.gseq};
+        var popUrl = "galleryUpload.do?gseq=" + gseq + "&mnum=" + mnum;
+        var popOption = "width=430, height=500, left= 600,status=no,scrollbars=no";
+        window.open(popUrl,"사진올리기", popOption);
+    }
+   </script>
 
-    function groupJoin(){
-    	Swal.fire({
-			  title: '모임에 가입 하시겠습니까?',
-			  icon: 'question',
-			  showCancelButton: true,
-			  confirmButtonColor: '#3085d6',
-			  cancelButtonColor: '#d33',
-			  confirmButtonText: 'Yes'
-			}).then((result) => {
-				console.log(result.isConfirmed);
-			  if (result.isConfirmed) {
-				var mnum = ${m.mnum};
-	  			var gseq = ${groupInfo.gseq};
-	  			var result = {"mnum":mnum,"gseq":gseq};
-		  		$(function(){
-  				$.ajax({
-	   					url: "memInGroup.json",
-	   					type: "POST",
-	   					data: result,
-	   					success: function(data){
-	   					}
-  				});
-  				location.reload();
-		  		});
-
-			  }
-			});
-    	}
-
-    	function groupQuit(){
-    		Swal.fire({
-    			  title: '모임에서 탈퇴 하시겠습니까?',
-    			  icon: 'question',
-    			  showCancelButton: true,
-    			  confirmButtonColor: '#3085d6',
-    			  cancelButtonColor: '#d33',
-    			  confirmButtonText: 'Yes'
-    			}).then((result) => {
-    				console.log(result.isConfirmed);
-    			  if (result.isConfirmed) {
-    				var mnum = ${m.mnum};
-  		  			var gseq = ${groupInfo.gseq};
-  		  			var result = {"mnum":mnum,"gseq":gseq};
-	  		  		$(function(){
-	    				$.ajax({
-		   					url: "groupQuit.json",
-		   					type: "POST",
-		   					data: result,
-		   					success: function(data){
-		   					}
-	    				});
-	    				location.reload();
-	  		  		});
-
-    			  }
-    			});
-    	}
-
-    	function groupDeleteCheck(){
-    		var mnum = ${m.mnum};
-  			var gseq = ${groupInfo.gseq};
-  			var result = {"mnum":mnum,"gseq":gseq};
-	   			$(function(){
-    				$.ajax({
-	   					url: "groupDeletecheck.json",
-	   					type: "POST",
-	   					data: result,
-	   					success: function(data){
-	   						if(data==0){//모임장일때일때
-	   							groupDelete();
-	   							console.log("check0: "+data);
-	   						}else{//모임장 아닐때
-	   							console.log("check1: "+data);
-	   							Swal.fire({
-		  							  title: "모임장만 삭제 가능합니다",
-		  							  icon: "error"
-	   							});
-	   						}
-	   					}
-	   				});
-	   			});
-    	}
-
-    	function groupUpdateCheck(){
-    		var mnum = ${m.mnum};
-  			var gseq = ${groupInfo.gseq};
-  			var result = {"mnum":mnum,"gseq":gseq};
-	   			$(function(){
-    				$.ajax({
-	   					url: "groupUpdatecheck.json",
-	   					type: "POST",
-	   					data: result,
-	   					success: function(data){
-	   						if(data==0){//모임장일때일때
-	   							groupUpdate();
-	   							console.log("check0: "+data);
-	   						}else if(data==1){//운영진일때
-	   							groupUpdate();
-	   							console.log("check1: "+data);
-	   							//swal("모임장,운영자만 수정 가능합니다");
-	   						}else if(data==2){//일반회원
-	   							console.log("check2: "+data);
-	   							Swal.fire({
-		  							  title: "모임장,운영자만 수정 가능합니다",
-		  							  icon: "error"
-	   							});
-	   						}else {//모임에없을때
-	   							Swal.fire({
-		  							  title: "모임장,운영자만 수정 가능합니다",
-		  							  icon: "error"
-	   							});
-	   							console.log("check3: "+data);
-	   						}
-	   					}
-	   				});
-	   			});
-    	}
-
-    	function groupUpdate(){
-    		location="groupUpdate.do?gseq=${groupInfo.gseq}";
-    	}
-
-    	function groupDelete(){
-    		location="groupDelete.do?gseq=${groupInfo.gseq}";
-    	}
-
-    	function memberInfo(index){
-    		var arr = new Array();
-    		<c:forEach var="memInGroupName" items="${memInGroupName}">
-        arr.push({mnum:"${memInGroupName.MNUM}"});
-    </c:forEach>
-        	console.log(arr);
-        	console.log(arr[index].mnum);
-        	baby_login = window.open(
-        	  "../member/memberInfo?mnum="+arr[index].mnum+"&gseq=${groupInfo.gseq}", "memberInfo",
-        	   "width=1000, height=900, top=100, left=100");
-        }
-    </script>
-    <script type="text/javascript">
-	    function gatheringCreateCheck(){
-  			var gseq = ${groupInfo.gseq};
-  			var result = {"gseq":gseq};
-  			$(function(){
- 				$.ajax({
-   					url: "gatheringCreateCheck.json",
-   					type: "POST",
-   					data: result,
-   					success: function(data){
-	   					if(data == 0){
-							Swal.fire({
-								title: '정모는 5개까지만 개설 가능합니다.',
-								icon: 'warning',
-								showCancelButton: false,
-								confirmButtonColor: '#3085d6',
-								confirmButtonText: 'Yes'
-							});
-						}else{
-							gatheringCreate();
-						}
-   					}
-   				});
-   			});
-		}
-
-    	function gatheringCreate(){
-    		location="../gathering/gatheringCreate.do?gseq=${groupInfo.gseq}&mnum=${m.mnum}";
-    	}
-
-
-    </script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script>
         Kakao.init('11400a9267d93835389eb9255fcaad0b');
@@ -309,8 +147,7 @@
     <!-- ======= Breadcrumbs ======= -->
     <div class="breadcrumbs" data-aos="fade-in">
         <div class="container">
-            <h1>${groupInfo.gname}</h1>
-            <p>모임 소개? or 지역?</p>
+            <h1>${groupGallery.gname}</h1>
         </div>
     </div>
     <!-- End Breadcrumbs -->
@@ -332,7 +169,7 @@
             </ul>
             <!-- 사진 올리기 버튼부 -->
             <div align="right">
-                <button type="button" class="btn btn-outline-dark">사진 올리기</button>
+                <button type="button" class="btn btn-outline-dark mb-3" onclick="galleryUpload();">사진 올리기</button>
             </div>
             <!-- Gallery -->
             <div class="row">

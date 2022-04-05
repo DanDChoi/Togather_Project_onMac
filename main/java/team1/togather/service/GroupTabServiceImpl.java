@@ -161,6 +161,10 @@ public class GroupTabServiceImpl implements GroupTabService {
 		return groupTabMapper.gatheringCountInGroup(gseq);
 	}
 
+	@Override
+	public void galleryUpload(GroupTab groupTab){
+		groupTabMapper.galleryUpload(groupTab);
+	}
 	
 
 }
