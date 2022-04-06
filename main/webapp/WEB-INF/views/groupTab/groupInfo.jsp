@@ -282,7 +282,7 @@
 	   			});
     	}
     	function galleryMember(){
-    		location="groupGallery.do?gseq=${groupInfo.gseq}&mnum=${memInGroupName.MNUM}";
+    		location="groupGallery.do?gseq=${groupInfo.gseq}&mnum=${m.mnum}";
     	}
     	</script>
     </c:forEach>

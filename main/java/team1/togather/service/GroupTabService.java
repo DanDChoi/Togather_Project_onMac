@@ -3,11 +3,7 @@ package team1.togather.service;
 import java.util.List;
 import java.util.Map;
 
-import team1.togather.domain.GroupTab;
-import team1.togather.domain.IndexCriteria;
-import team1.togather.domain.MemInGroup;
-import team1.togather.domain.Member;
-import team1.togather.domain.QandA;
+import team1.togather.domain.*;
 
 public interface GroupTabService {
 	List<GroupTab> selectAllS(IndexCriteria cri);//로그인안했을때 리스트
@@ -40,5 +36,6 @@ public interface GroupTabService {
 	void quitGroupDeleteGathering(long mnum);//모임 탈퇴시 만들어둔 정모 모두 삭제
 	Long gatheringCountInGroup(long gseq);//만들어진 정모 갯수
 	//04.05
-	void galleryUpload(GroupTab groupTab);
+	void galleryUpload(GroupTabGallery groupTabGallery);
+	GroupTabGallery selectPhoto(GroupTabGallery groupTabGallery);
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import team1.togather.domain.Gathering;
-import team1.togather.domain.GroupTab;
-import team1.togather.domain.MemInGroup;
-import team1.togather.domain.Member;
+import team1.togather.domain.*;
 import team1.togather.fileset.Path;
 import team1.togather.service.GatheringService;
 import team1.togather.service.GroupTabService;
@@ -257,20 +255,28 @@ public class GroupTabController {
 	}
 
 	@GetMapping("groupGallery.do")
-	public ModelAndView groupGallery(long gseq) {
+	public ModelAndView groupGallery(long gseq, GroupTabGallery groupTabGallery) {
 		GroupTab groupGallery = groupTabService.selectByGSeqS(gseq);
+		GroupTabGallery gallery = groupTabService.selectPhoto(groupTabGallery);
 		ModelAndView mv = new ModelAndView("groupTab/groupGallery", "groupGallery", groupGallery);
-
+		mv.addObject("gallery", gallery);
+		return mv;
+	}
+	@GetMapping("galleryUpload.do")
+	public ModelAndView galleryUpload(long gseq) {
+		GroupTab galleryUpload = groupTabService.selectByGSeqS(gseq);
+		ModelAndView mv = new ModelAndView("groupTab/galleryUpload", "galleryUpload", galleryUpload);
 		return mv;
 	}
 
 	@PostMapping("galleryUpload.do")
-	public String galleryUpload(GroupTab groupTab, HttpSession session) {
+	@ResponseBody
+	public String galleryUpload(GroupTab groupTab, GroupTabGallery groupTabGallery, HttpSession session) {
 		String galleryFNname = null;
-		MultipartFile uploadFile = groupTab.getUploadFile();
+		MultipartFile galleryPhoto = groupTab.getUploadFile();
 
-		if (!uploadFile.isEmpty()) {
-			String galleryOFNname = uploadFile.getOriginalFilename(); //파일의 원본이름
+		if (!galleryPhoto.isEmpty()) {
+			String galleryOFNname = galleryPhoto.getOriginalFilename(); //파일의 원본이름
 			int idx = galleryOFNname.lastIndexOf("."); //파일명까지 자르기
 			String ofheader = galleryOFNname.substring(0, idx); //확장자 자르기
 			String ext = FilenameUtils.getExtension(galleryOFNname); //파일의 확장자 구하기
@@ -280,15 +286,14 @@ public class GroupTabController {
 			String rGFname = randomGFname.substring(0, 5);
 			galleryFNname = ofheader + rGFname + "." + ext;
 			try {
-				uploadFile.transferTo(new File(Path.GALLERY_PHOTO + galleryFNname));
+				galleryPhoto.transferTo(new File(Path.GALLERY_PHOTO + galleryFNname));
 			} catch (IOException ie) {
 			}
 			groupTab.setFname(galleryFNname);
 		}
-		groupTabService.galleryUpload(groupTab);
-		GroupTab g = groupTabService.insertGroupInfo(groupTab);
+		groupTabService.galleryUpload(groupTabGallery);
 		Member m = (Member) session.getAttribute("m");
-		return null;
+		return "ok";
 	}
 }
 

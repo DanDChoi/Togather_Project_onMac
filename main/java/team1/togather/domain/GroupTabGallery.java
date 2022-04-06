@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupTabGallery {
+    private long galseq;
     private long gseq;
     private long mnum;
     private String mname;

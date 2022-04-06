@@ -111,8 +111,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			select count(*) from GATHERING where gseq=#{gseq}
 		</select>
 		<!-- 대현추가 04.05 -->
+		<!-- GroupGallery에서 사진 가져오기 -->
+		<select id="selectPhoto" parameterType="GroupTabGallery" resultType="GroupTabGallery">
+			select * from GROUP_GALLERY where mnum=#{mnum} and gseq=#{gseq} and galseq=1
+		</select>
 		<!-- 사진첩 업로드 -->
-		<insert id="galleryUpload" parameterType="GroupTab">
-			insert into GROUP_GALLERY values(#{gseq},#{mnum},#{name},#{pname},2)
+		<insert id="galleryUpload" parameterType="GroupTabGallery">
+			insert into GROUP_GALLERY values(GAL_SEQ.nextval, #{gseq},#{mnum},#{mname},#{pname},2)
 		</insert>
 	</mapper>

@@ -3,10 +3,8 @@ package team1.togather.mapper;
 import java.util.List;
 import java.util.Map;
 
-import team1.togather.domain.GroupTab;
-import team1.togather.domain.IndexCriteria;
-import team1.togather.domain.MemInGroup;
-import team1.togather.domain.Member;
+import org.apache.ibatis.annotations.Param;
+import team1.togather.domain.*;
 
 public interface GroupTabMapper {
 	List<GroupTab> selectAll(IndexCriteria cri);//로그인 안했을때 그룹 리스트
@@ -42,6 +40,7 @@ public interface GroupTabMapper {
 	void quitGroupDeleteGathering(long mnum);
 	Long gatheringCountInGroup(long gseq);
 	//04.05 대현추가
-	void galleryUpload(GroupTab groupTab);
+	void galleryUpload(GroupTabGallery groupTabGallery);
+	GroupTabGallery selectPhoto(GroupTabGallery groupTabGallery);
 }
 

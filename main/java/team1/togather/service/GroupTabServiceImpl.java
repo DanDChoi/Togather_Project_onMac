@@ -6,10 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
-import team1.togather.domain.GroupTab;
-import team1.togather.domain.IndexCriteria;
-import team1.togather.domain.MemInGroup;
-import team1.togather.domain.Member;
+import team1.togather.domain.*;
 import team1.togather.mapper.GroupTabMapper;
 
 @Service
@@ -162,8 +159,12 @@ public class GroupTabServiceImpl implements GroupTabService {
 	}
 
 	@Override
-	public void galleryUpload(GroupTab groupTab){
-		groupTabMapper.galleryUpload(groupTab);
+	public void galleryUpload(GroupTabGallery groupTabGallery){
+		groupTabMapper.galleryUpload(groupTabGallery);
+	}
+	@Override
+	public GroupTabGallery selectPhoto(GroupTabGallery groupTabGallery){
+		return groupTabMapper.selectPhoto(groupTabGallery);
 	}
 	
 

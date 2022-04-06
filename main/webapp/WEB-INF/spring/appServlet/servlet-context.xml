@@ -49,7 +49,7 @@
 	
 	<beans:bean id="chattingHandler" class="team1.togather.chattingHandler.ChattingHandler"/>
 	
-	<context:component-scan base-package="team1.togather.controller"/>
+	<context:component-scan base-package="team1.togather.*"/>
 	<interceptors>
         <interceptor>
                <mapping path="/groupTab/*"/>
