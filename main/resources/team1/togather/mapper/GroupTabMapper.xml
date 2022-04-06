@@ -111,12 +111,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			select count(*) from GATHERING where gseq=#{gseq}
 		</select>
 		<!-- 대현추가 04.05 -->
-		<!-- GroupGallery에서 사진 가져오기 -->
+		<!-- GroupGallery에서 사진 가져오기
 		<select id="selectPhoto" parameterType="GroupTabGallery" resultType="GroupTabGallery">
-			select * from GROUP_GALLERY where mnum=#{mnum} and gseq=#{gseq} and galseq=1
+			select * from GROUP_GALLERY where gseq=#{gseq}
+		</select> -->
+		<!-- 페이지정보를 지정한 크기만큼 가져오기 -->
+		<select id="selectPhoto" resultType="GroupTabGallery" parameterType="HashMap">
+			<![CDATA[
+			select * from (select ROWNUM rnum, aa.* from (select * from GROUP_GALLERY order by galseq desc) aa)
+			where rnum>#{startRow} and rnum<=#{endRow} and gseq=#{gseq} order by galseq desc
+			]]>
 		</select>
 		<!-- 사진첩 업로드 -->
 		<insert id="galleryUpload" parameterType="GroupTabGallery">
 			insert into GROUP_GALLERY values(GAL_SEQ.nextval, #{gseq},#{mnum},#{mname},#{pname},2)
 		</insert>
+		<!-- 사진첩 페이지 계산-->
+		<select id="galleryPageCount" resultType="Integer">
+			select count(*) from GROUP_GALLERY where gseq=#{gseq}
+		</select>
 	</mapper>

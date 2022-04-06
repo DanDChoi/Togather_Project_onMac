@@ -47,9 +47,46 @@
 
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet" />
+    <!-- alert  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- jQuery -->
+    <script type="text/javascript" language="javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script>
 		window.history.forward();
 	 	function noBack(){window.history.forward();}
+
+	 	
+	 	function uploadCheck(){
+            var form = $("form")[0];
+            var formData = new FormData(form);
+	 	    $.ajax({
+	 	        cache : false,
+	 	        processData: false,
+				url: "galleryUpload.json",
+				type: "POST",
+				data: formData,
+				success: function(data){
+					console.log(data);
+						swal({
+							  title: "업로드 완료",
+							  icon: "success",
+							  button: {
+								  text:"확인",
+								  value:true
+								  },
+							  closeOnClickOutside : false
+							}).then((result)=>{
+								if(result){
+									window.close();
+								}
+							});
+
+				}
+			});
+	 	}
 	</script>
 
 </head>
@@ -57,7 +94,7 @@
 <body onload="noBack();" onpageshow="if(event.persisted) noBack();" onunload="">
 <main id="main">
     <!-- ======= Breadcrumbs ======= -->
-    <div class="breadcrumbs" data-aos="fade-in">
+    <div class="breadcrumbs mt-0" data-aos="fade-in">
         <div class="container">
             <h1>사진 올리기</h1>
         </div>
@@ -77,7 +114,7 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                                     <!--모임지역/이름/모임소개/관심사/정원/모임사진-->
-                                    <form class="mx-1 mx-md-4" method="post" action="galleryUpload.do?mnum=${m.mnum }" enctype="multipart/form-data">
+                                    <form class="mx-1 mx-md-4" method="post" id="uploadPhoto" action="galleryUpload.do?mnum=${m.mnum}&gseq=${galleryUpload.gseq}&mname=${m.mname}" enctype="multipart/form-data">
                                         <!-- 파일 업로드 폼 -->
                                         <div class="d-flex flex-row align-items-center mb-0">
                                             <div class="form-outline flex-fill mb-2">
@@ -88,7 +125,7 @@
                                                         type="file"
                                                         id="form3Example1c"
                                                         class="form-control"
-                                                        name="galleryPhoto"
+                                                        name="uploadFile"
                                                         required
                                                 />
                                             </div>
@@ -98,9 +135,10 @@
                                                 class="d-flex justify-content-center mx-4 mb-3 mb-lg-4"
                                         >
                                             <button
-                                                    type="submit"
+                                                    type="button"
                                                     class="btn btn-success"
                                                     style="margin-right: 30px"
+                                                    onclick="javascript:uploadCheck()"
                                             >
                                                 올리기
                                             </button>

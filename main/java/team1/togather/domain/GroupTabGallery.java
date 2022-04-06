@@ -3,6 +3,7 @@ package team1.togather.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -14,4 +15,5 @@ public class GroupTabGallery {
     private String mname;
     private String pname;
     private int grade;
+    private MultipartFile uploadFile;
 }

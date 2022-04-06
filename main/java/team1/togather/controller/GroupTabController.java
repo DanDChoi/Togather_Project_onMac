@@ -2,10 +2,7 @@ package team1.togather.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,6 +11,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -255,25 +253,44 @@ public class GroupTabController {
 	}
 
 	@GetMapping("groupGallery.do")
-	public ModelAndView groupGallery(long gseq, GroupTabGallery groupTabGallery) {
+	public ModelAndView groupGallery(IndexCriteria cri, long gseq, GroupTabGallery groupTabGallery, HttpServletRequest request) {
 		GroupTab groupGallery = groupTabService.selectByGSeqS(gseq);
-		GroupTabGallery gallery = groupTabService.selectPhoto(groupTabGallery);
+		IndexPage pm = new IndexPage();
+		pm.setCri(cri);
+		pm.setTotalCount(groupTabService.galleryPageCount(gseq));
+
+		if(request.getParameter("page")!=null) {
+			String pageAt = request.getParameter("page");
+			cri.setPage(Integer.parseInt(pageAt));
+		}
+		if(request.getParameter("pageSize")!=null) {
+			String pageSize = request.getParameter("pageSize");
+			cri.setPageSize(Integer.parseInt(pageSize));
+		}
+		HashMap<String, Object> map = new HashMap<>();
+		List<GroupTabGallery> list = new ArrayList<>();
+		map.put("startRow",cri.getStartRow());
+		map.put("endRow",cri.getEndRow());
+		map.put("gseq", gseq);
+		list.addAll(groupTabService.selectPhoto(map));
 		ModelAndView mv = new ModelAndView("groupTab/groupGallery", "groupGallery", groupGallery);
-		mv.addObject("gallery", gallery);
+		mv.addObject("gallery", list);
+		mv.addObject("pm", pm);
+		mv.addObject("cri", cri);
 		return mv;
 	}
+
 	@GetMapping("galleryUpload.do")
 	public ModelAndView galleryUpload(long gseq) {
 		GroupTab galleryUpload = groupTabService.selectByGSeqS(gseq);
 		ModelAndView mv = new ModelAndView("groupTab/galleryUpload", "galleryUpload", galleryUpload);
 		return mv;
 	}
-
-	@PostMapping("galleryUpload.do")
 	@ResponseBody
-	public String galleryUpload(GroupTab groupTab, GroupTabGallery groupTabGallery, HttpSession session) {
+	@PostMapping("galleryUpload")
+	public String galleryUpload(GroupTabGallery groupTabGallery, HttpSession session) {
 		String galleryFNname = null;
-		MultipartFile galleryPhoto = groupTab.getUploadFile();
+		MultipartFile galleryPhoto = groupTabGallery.getUploadFile();
 
 		if (!galleryPhoto.isEmpty()) {
 			String galleryOFNname = galleryPhoto.getOriginalFilename(); //파일의 원본이름
@@ -289,10 +306,11 @@ public class GroupTabController {
 				galleryPhoto.transferTo(new File(Path.GALLERY_PHOTO + galleryFNname));
 			} catch (IOException ie) {
 			}
-			groupTab.setFname(galleryFNname);
+			groupTabGallery.setPname(galleryFNname);
 		}
+		System.out.println("groupTabGallery"+ groupTabGallery);
+		log.trace("groupTabGallery"+ groupTabGallery);
 		groupTabService.galleryUpload(groupTabGallery);
-		Member m = (Member) session.getAttribute("m");
 		return "ok";
 	}
 }

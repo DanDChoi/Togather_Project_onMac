@@ -60,7 +60,7 @@
         var mnum = ${m.mnum};
         var gseq = ${groupGallery.gseq};
         var popUrl = "galleryUpload.do?gseq=" + gseq + "&mnum=" + mnum;
-        var popOption = "width=430, height=500, left= 600,status=no,scrollbars=no";
+        var popOption = "width=430, height=380, left= 600,status=no,scrollbars=no";
         window.open(popUrl,"사진올리기", popOption);
     }
    </script>
@@ -174,48 +174,88 @@
             <!-- Gallery -->
             <div class="row">
                 <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+                    <c:if test="${gallery[0].pname ne null}">
                     <img
-                            src="../../../resources/assets/img/groupGallery/${gallery}"
+                            src="../../../resources/assets/img/groupGallery/${gallery[0].pname}"
                             class="w-100 shadow-1-strong rounded mb-4"
-                            alt="Boat on Calm Water"
                     />
-
+                    </c:if>
+                    <c:if test="${gallery[3].pname ne null}">
                     <img
-                            src="../../../resources/assets/img/groupGallery/sample2.jpg"
+                            src="../../../resources/assets/img/groupGallery/${gallery[3].pname}"
                             class="w-100 shadow-1-strong rounded mb-4"
-                            alt="Wintry Mountain Landscape"
                     />
+                    </c:if>
                 </div>
 
                 <div class="col-lg-4 mb-4 mb-lg-0">
+                    <c:if test="${gallery[1].pname ne null}">
                     <img
-                            src="../../../resources/assets/img/groupGallery/sample3.jpg"
+                            src="../../../resources/assets/img/groupGallery/${gallery[1].pname}"
                             class="w-100 shadow-1-strong rounded mb-4"
-                            alt="Mountains in the Clouds"
                     />
-
+                    </c:if>
+                    <c:if test="${gallery[4].pname ne null}">
                     <img
-                            src="../../../resources/assets/img/groupGallery/sample4.jpg"
+                            src="../../../resources/assets/img/groupGallery/${gallery[4].pname}"
                             class="w-100 shadow-1-strong rounded mb-4"
-                            alt="Boat on Calm Water"
                     />
+                    </c:if>
                 </div>
 
                 <div class="col-lg-4 mb-4 mb-lg-0">
+                    <c:if test="${gallery[2].pname ne null}">
                     <img
-                            src="../../../resources/assets/img/groupGallery/sample5.jpg"
+                            src="../../../resources/assets/img/groupGallery/${gallery[2].pname}"
                             class="w-100 shadow-1-strong rounded mb-4"
-                            alt="Waves at Sea"
                     />
-
+                    </c:if>
+                    <c:if test="${gallery[5].pname ne null}">
                     <img
-                            src="../../../resources/assets/img/groupGallery/sample6.jpg"
+                            src="../../../resources/assets/img/groupGallery/${gallery[5].pname}"
                             class="w-100 shadow-1-strong rounded mb-4"
-                            alt="Yosemite National Park"
                     />
+                    </c:if>
                 </div>
             </div>
                 <!-- Gallery -->
+            <!-- 갤러리 페이징 -->
+            <div>
+                <nav aria-label="Page navigation example">
+                    <ul
+                            id="paging"
+                            class="pagination"
+                            style="justify-content: center"
+                    >
+                        <c:if test="${pm.prev}">
+                            <li class="page-item">
+                                <a class="page-link" href="groupGallery.do?page=${pm.startPage-1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">처음</a>
+                            </li>
+                        </c:if>
+                        <c:if test="${pm.prev}">
+                            <li class="page-item">
+                                <a class="page-link" href="groupGallery.do?page=${cri.page-1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">이전</a>
+                            </li>
+                        </c:if>
+                        <c:forEach var="idx" begin="${pm.startPage }" end="${pm.endPage }">
+                            <li class="page-item">
+                                <a class="page-link" href="groupGallery.do?page=${idx }&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">${idx}</a>
+                            </li>
+                        </c:forEach>
+                        <c:if test="${pm.next && pm.endPage > 0}">
+                            <li class="page-item">
+                                <a class="page-link" href="groupGallery.do?page=${cri.page+1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">다음</a>
+                            </li>
+                        </c:if>
+                        <c:if test="${pm.next && pm.endPage > 0}">
+                            <li class="page-item">
+                                <a class="page-link" href="groupGallery.do?page=${pm.endPage}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">끝</a>
+                            </li>
+                        </c:if>
+                    </ul>
+                </nav>
+            </div>
+            <!-- 갤러리 페이징 끝 -->
         </div>
     </section>
     <!-- End Cource Details Section -->

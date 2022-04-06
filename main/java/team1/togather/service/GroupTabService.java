@@ -1,5 +1,6 @@
 package team1.togather.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,5 +38,6 @@ public interface GroupTabService {
 	Long gatheringCountInGroup(long gseq);//만들어진 정모 갯수
 	//04.05
 	void galleryUpload(GroupTabGallery groupTabGallery);
-	GroupTabGallery selectPhoto(GroupTabGallery groupTabGallery);
+	List<GroupTabGallery> selectPhoto(HashMap<String, Object> map);
+	Integer galleryPageCount(long gseq);
 }

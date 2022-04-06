@@ -256,6 +256,7 @@
     	}
     	</script>
     </c:forEach>
+
     <!-- 04/05 대현추가 (사진첩 멤버체크)-->
     <c:forEach items="${memInGroupName}" var="memInGroupName">
     <script type="text/javascript">
@@ -287,6 +288,7 @@
     	</script>
     </c:forEach>
     <!-- 04/05 대현추가 끝-->
+
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script>
         Kakao.init('11400a9267d93835389eb9255fcaad0b');

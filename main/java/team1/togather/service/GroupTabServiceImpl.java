@@ -1,5 +1,6 @@
 package team1.togather.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -163,8 +164,12 @@ public class GroupTabServiceImpl implements GroupTabService {
 		groupTabMapper.galleryUpload(groupTabGallery);
 	}
 	@Override
-	public GroupTabGallery selectPhoto(GroupTabGallery groupTabGallery){
-		return groupTabMapper.selectPhoto(groupTabGallery);
+	public List<GroupTabGallery> selectPhoto(HashMap<String, Object> map){
+		return groupTabMapper.selectPhoto(map);
+	}
+	@Override
+	public Integer galleryPageCount(long gseq){
+		return groupTabMapper.galleryPageCount(gseq);
 	}
 	
 
