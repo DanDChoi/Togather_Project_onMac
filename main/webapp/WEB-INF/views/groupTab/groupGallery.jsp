@@ -54,15 +54,71 @@
     <!-- JQuery -->
     <script type="text/javascript" language="javascript"
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-
+	<!-- 사진확대용 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/css/lightbox.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+   	
+   	
     <script type="text/javascript">
-    function galleryUpload() {
-        var mnum = ${m.mnum};
-        var gseq = ${groupGallery.gseq};
-        var popUrl = "galleryUpload.do?gseq=" + gseq + "&mnum=" + mnum;
-        var popOption = "width=430, height=380, left= 600,status=no,scrollbars=no";
-        window.open(popUrl,"사진올리기", popOption);
-    }
+	    function galleryUpload() {
+	        var mnum = ${m.mnum};
+	        var gseq = ${groupGallery.gseq};
+	        var popUrl = "galleryUpload.do?gseq=" + gseq + "&mnum=" + mnum;
+	        var popOption = "width=430, height=380, left= 600,status=no,scrollbars=no";
+	        window.open(popUrl,"사진올리기", popOption);
+	    }
+   </script>
+   <script type="text/javascript">
+   		function authCheck(check){
+   			Swal.fire({
+  			  title: '사진을 삭제하시겠습니까?',
+  			  icon: 'question',
+  			  showCancelButton: true,
+  			  confirmButtonColor: '#3085d6',
+  			  cancelButtonColor: '#d33',
+  			  confirmButtonText: 'Yes'
+  			}).then((result) => {
+  			if (result.isConfirmed) {
+   			var mnum = ${m.mnum};
+   			var gseq = ${groupGallery.gseq};
+  			var galseq = check;
+  			var result = {"mnum":mnum,"gseq":gseq};
+    				$.ajax({
+	   					url: "galleryDeleteCheck.json",
+	   					type: "POST",
+	   					data: result,
+	   					success: function(data){
+	   						if(data==0){//모임장일때일때
+	   							galleryDelete(galseq, gseq);
+	   							console.log("check0: "+data);
+	   						}else{//모임장 아닐때
+	   							var result2 = {"mnum":mnum, "galseq":galseq}
+	   							$.ajax({
+	   			   					url: "galleryDeleteCheck2.json",
+	   			   					type: "POST",
+	   			   					data: result2,
+	   			   					success: function(data){
+	   			   						if(data == 1){
+	   			   							galleryDelete(galseq, gseq);
+	   			   							
+	   			   						}else{
+		   			   						Swal.fire({
+		  		  							  title: "작성자만 삭제 가능합니다",
+		  		  							  icon: "error"
+	  	   									});
+	   			   						}
+	   			   					}
+	   							});
+	   						}
+	   					}
+	   				});
+  				}
+  			});
+   		}
+   		function galleryDelete(galseq, gseq){
+   			location="galleryDelete.do?gseq="+gseq+"&mnum=${m.mnum}&galseq="+galseq+"&page=1&pageSize=${cri.pageSize}";
+   		}
    </script>
 
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
@@ -81,7 +137,29 @@
         }
     </script>
 </head>
-
+<!-- 이미지 위 삭제버튼용 css -->
+<style>
+	.del_link{
+        display: none;
+        background-color: rgba(0,0,0,0.5);
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 2px 10px;
+        color: #fff;
+	    }
+    .img_link {
+        position: relative;
+        display: inline-block;
+    }
+    .jisu:hover+.del_link {
+        display: block;
+    }
+    .jisu:hover>.del_link {
+        display: block;
+    }
+</style>
+<!-- 이미지 위 삭제버튼용 css  -->
 <body>
 <!-- ======= Header ======= -->
 <header id="header" class="fixed-top">
@@ -175,50 +253,80 @@
             <div class="row">
                 <div class="col-lg-4 col-md-12 mb-4 mb-lg-0">
                     <c:if test="${gallery[0].pname ne null}">
-                    <img
-                            src="../../../resources/assets/img/groupGallery/${gallery[0].pname}"
-                            class="w-100 shadow-1-strong rounded mb-4"
-                    />
+                    	<div class="jisu"style="position:relative">
+		                    <a href="/groupGallery/${gallery[0].pname}" data-title="upload by ${gallery[0].mname}" data-lightbox="example-set" class="img_link">
+			                    <img
+			                            src="/groupGallery/${gallery[0].pname}"
+			                            class="w-100 shadow-1-strong rounded mb-4"
+			                    />
+		                    </a>
+		                    <a href="javascript:authCheck(${gallery[0].galseq})" class="del_link"><h4>X</h4></a>
+	                    </div>
                     </c:if>
                     <c:if test="${gallery[3].pname ne null}">
-                    <img
-                            src="../../../resources/assets/img/groupGallery/${gallery[3].pname}"
-                            class="w-100 shadow-1-strong rounded mb-4"
-                    />
+	                    <div class="jisu"style="position:relative">
+		                    <a href="/groupGallery/${gallery[3].pname}" data-title="upload by ${gallery[3].mname}" data-lightbox="example-set" class="img_link">
+		                    <img
+		                            src="/groupGallery/${gallery[3].pname}"
+		                            class="w-100 shadow-1-strong rounded mb-4"
+		                    />
+		                    </a>
+		                    <a href="javascript:authCheck(${gallery[3].galseq})" class="del_link"><h4>X</h4></a>
+	                    </div>
                     </c:if>
                 </div>
 
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <c:if test="${gallery[1].pname ne null}">
-                    <img
-                            src="../../../resources/assets/img/groupGallery/${gallery[1].pname}"
-                            class="w-100 shadow-1-strong rounded mb-4"
-                    />
+	                    <div class="jisu"style="position:relative">
+		                    <a href="/groupGallery/${gallery[1].pname}" data-title="upload by ${gallery[1].mname}" data-lightbox="example-set" class="img_link">
+		                    <img
+		                            src="/groupGallery/${gallery[1].pname}"
+		                            class="w-100 shadow-1-strong rounded mb-4"
+		                    />
+		                    </a>
+		                    <a href="javascript:authCheck(${gallery[1].galseq})" class="del_link"><h4>X</h4></a>
+	                    </div>
                     </c:if>
                     <c:if test="${gallery[4].pname ne null}">
-                    <img
-                            src="../../../resources/assets/img/groupGallery/${gallery[4].pname}"
-                            class="w-100 shadow-1-strong rounded mb-4"
-                    />
+	                    <div class="jisu"style="position:relative">
+		                    <a href="/groupGallery/${gallery[4].pname}" data-title="upload by ${gallery[4].mname}" data-lightbox="example-set" class="img_link">
+		                    <img
+		                            src="/groupGallery/${gallery[4].pname}"
+		                            class="w-100 shadow-1-strong rounded mb-4"
+		                    />
+		                    </a>
+		                    <a href="javascript:authCheck(${gallery[4].galseq})" class="del_link"><h4>X</h4></a>
+	                    </div>
                     </c:if>
                 </div>
 
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <c:if test="${gallery[2].pname ne null}">
-                    <img
-                            src="../../../resources/assets/img/groupGallery/${gallery[2].pname}"
-                            class="w-100 shadow-1-strong rounded mb-4"
-                    />
+	                    <div class="jisu"style="position:relative">
+		                    <a href="/groupGallery/${gallery[2].pname}" data-title="upload by ${gallery[2].mname}" data-lightbox="example-set" class="img_link">
+		                    <img
+		                            src="/groupGallery/${gallery[2].pname}"
+		                            class="w-100 shadow-1-strong rounded mb-4"
+		                    />
+		                    </a>
+		                    <a href="javascript:authCheck(${gallery[2].galseq})" class="del_link"><h4>X</h4></a>
+	                    </div>
                     </c:if>
                     <c:if test="${gallery[5].pname ne null}">
-                    <img
-                            src="../../../resources/assets/img/groupGallery/${gallery[5].pname}"
-                            class="w-100 shadow-1-strong rounded mb-4"
-                    />
+	                    <div class="jisu"style="position:relative">
+		                    <a href="/groupGallery/${gallery[5].pname}" data-title="upload by ${gallery[5].mname}" data-lightbox="example-set" class="img_link">
+		                    <img
+		                            src="/groupGallery/${gallery[5].pname}"
+		                            class="w-100 shadow-1-strong rounded mb-4"
+		                    />
+		                    </a>
+		                    <a href="javascript:authCheck(${gallery[5].galseq})" class="del_link"><h4>X</h4></a>
+	                    </div>
                     </c:if>
                 </div>
             </div>
-                <!-- Gallery -->
+                <!-- Gallery 끝 -->
             <!-- 갤러리 페이징 -->
             <div>
                 <nav aria-label="Page navigation example">
@@ -229,12 +337,12 @@
                     >
                         <c:if test="${pm.prev}">
                             <li class="page-item">
-                                <a class="page-link" href="groupGallery.do?page=${pm.startPage-1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">처음</a>
+                                <a class="page-link" href="groupGallery.do?page=${pm.startPage-1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">&lt;&lt;</a>
                             </li>
                         </c:if>
                         <c:if test="${pm.prev}">
                             <li class="page-item">
-                                <a class="page-link" href="groupGallery.do?page=${cri.page-1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">이전</a>
+                                <a class="page-link" href="groupGallery.do?page=${cri.page-1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">&lt;</a>
                             </li>
                         </c:if>
                         <c:forEach var="idx" begin="${pm.startPage }" end="${pm.endPage }">
@@ -244,12 +352,12 @@
                         </c:forEach>
                         <c:if test="${pm.next && pm.endPage > 0}">
                             <li class="page-item">
-                                <a class="page-link" href="groupGallery.do?page=${cri.page+1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">다음</a>
+                                <a class="page-link" href="groupGallery.do?page=${cri.page+1}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">&gt;</a>
                             </li>
                         </c:if>
                         <c:if test="${pm.next && pm.endPage > 0}">
                             <li class="page-item">
-                                <a class="page-link" href="groupGallery.do?page=${pm.endPage}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">끝</a>
+                                <a class="page-link" href="groupGallery.do?page=${pm.endPage}&pageSize=${cri.pageSize}&gseq=${groupGallery.gseq}&mnum=${m.mnum}">&gt;&gt;</a>
                             </li>
                         </c:if>
                     </ul>

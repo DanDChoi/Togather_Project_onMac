@@ -40,4 +40,6 @@ public interface GroupTabService {
 	void galleryUpload(GroupTabGallery groupTabGallery);
 	List<GroupTabGallery> selectPhoto(HashMap<String, Object> map);
 	Integer galleryPageCount(long gseq);
+	void galleryDelete(GroupTabGallery groupTabGallery);
+	Integer writerCheck(GroupTabGallery groupTabGallery);
 }

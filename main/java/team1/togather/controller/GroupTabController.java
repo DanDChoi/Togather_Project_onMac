@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.AllArgsConstructor;
@@ -287,11 +288,15 @@ public class GroupTabController {
 		return mv;
 	}
 	@ResponseBody
-	@PostMapping("galleryUpload")
-	public String galleryUpload(GroupTabGallery groupTabGallery, HttpSession session) {
+	@RequestMapping("galleryUpload")
+	public String galleryUpload(GroupTabGallery groupTabGallery, MemInGroup memInGroup, HttpSession session,MultipartHttpServletRequest mRequest) {
 		String galleryFNname = null;
 		MultipartFile galleryPhoto = groupTabGallery.getUploadFile();
-
+		Member member = (Member)session.getAttribute("m");
+		memInGroup.setGseq(groupTabGallery.getGseq());
+		memInGroup.setMnum(member.getMnum());
+		Long grade = groupTabService.grade(memInGroup);
+		
 		if (!galleryPhoto.isEmpty()) {
 			String galleryOFNname = galleryPhoto.getOriginalFilename(); //파일의 원본이름
 			int idx = galleryOFNname.lastIndexOf("."); //파일명까지 자르기
@@ -308,10 +313,33 @@ public class GroupTabController {
 			}
 			groupTabGallery.setPname(galleryFNname);
 		}
-		System.out.println("groupTabGallery"+ groupTabGallery);
-		log.trace("groupTabGallery"+ groupTabGallery);
+		System.out.println("#groupTabGallery(sout): "+ groupTabGallery);
+		log.trace("#groupTabGallery(log): "+ groupTabGallery);
+		groupTabGallery.setGrade(Math.toIntExact(grade));
 		groupTabService.galleryUpload(groupTabGallery);
-		return "ok";
+		return "1";
+	}
+	
+	@PostMapping("galleryDeleteCheck")
+	@ResponseBody
+	public Long galleryDeleteCheck(MemInGroup memInGroup) {
+		//0=모임장 1=운영진 2=일반
+		Long grade = groupTabService.grade(memInGroup);
+		return grade;
+	}
+	@PostMapping("galleryDeleteCheck2")
+	@ResponseBody
+	public Integer galleryDeleteCheck2(GroupTabGallery groupTabGallery) {
+		Integer count = groupTabService.writerCheck(groupTabGallery);
+		return count;
+	}
+	
+	@GetMapping("galleryDelete.do")
+	public String galleryDelte(IndexCriteria cri, long gseq, GroupTabGallery groupTabGallery, HttpServletRequest request, long mnum) {
+		System.out.println("#galleryDelete(1): "+ groupTabGallery);
+		groupTabService.galleryDelete(groupTabGallery); 
+		System.out.println("#galleryDelete(2): "+ groupTabGallery);
+		return "redirect:groupGallery.do?page="+cri.getPage()+"&pageSize="+cri.getPageSize()+"&gseq="+gseq+"&mnum="+mnum;
 	}
 }
 

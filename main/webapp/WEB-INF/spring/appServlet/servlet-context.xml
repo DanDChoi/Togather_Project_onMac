@@ -19,7 +19,8 @@
 	<resources mapping="/js/**" location="/resources/js/" />
 	<resources mapping="/assets/**" location="/resources/assets/"/>
 	<resources mapping="/forms/**" location="/resources/forms/" />
-	<resources mapping="/table/**" location="/resources/table/" /> 
+	<resources mapping="/table/**" location="/resources/table/" />
+	<resources mapping="/groupGallery/**" location="/resources/assets/img/groupGallery/" />  
 	
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->

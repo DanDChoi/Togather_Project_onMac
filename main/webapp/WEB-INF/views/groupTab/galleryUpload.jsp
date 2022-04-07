@@ -49,49 +49,55 @@
     <link href="/assets/css/style.css" rel="stylesheet" />
     <!-- alert  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- jQuery -->
     <script type="text/javascript" language="javascript"
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <style type="text/css">
+   .swal-footer{
+      text-align:center;
+   }
+   </style>
     <script>
-		window.history.forward();
-	 	function noBack(){window.history.forward();}
-
-	 	
+	
 	 	function uploadCheck(){
-            var form = $("form")[0];
+            var form = $("#uploadPhoto")[0];
             var formData = new FormData(form);
 	 	    $.ajax({
-	 	        cache : false,
 	 	        processData: false,
 				url: "galleryUpload.json",
 				type: "POST",
+			    contentType: false,
 				data: formData,
 				success: function(data){
 					console.log(data);
-						swal({
-							  title: "업로드 완료",
-							  icon: "success",
-							  button: {
-								  text:"확인",
-								  value:true
-								  },
-							  closeOnClickOutside : false
-							}).then((result)=>{
-								if(result){
-									window.close();
-								}
-							});
-
+					swal({
+						  title: "업로드 성공!",
+						  icon: "success",
+						  button: {
+							  text:"확인",
+							  value:true
+							  },
+						  closeOnClickOutside : false
+						}).then((result)=>{
+							if(result){
+								opener.location.reload();
+								window.close();
+							}
+						});
+					
+				},
+		 	   	error:function(error){
+					console.log("##error: "+error); 
 				}
-			});
+			}); 
 	 	}
 	</script>
 
 </head>
 
-<body onload="noBack();" onpageshow="if(event.persisted) noBack();" onunload="">
+<body   >
 <main id="main">
     <!-- ======= Breadcrumbs ======= -->
     <div class="breadcrumbs mt-0" data-aos="fade-in">
@@ -114,10 +120,14 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                                     <!--모임지역/이름/모임소개/관심사/정원/모임사진-->
-                                    <form class="mx-1 mx-md-4" method="post" id="uploadPhoto" action="galleryUpload.do?mnum=${m.mnum}&gseq=${galleryUpload.gseq}&mname=${m.mname}" enctype="multipart/form-data">
+                                    <form name="f" class="mx-1 mx-md-4" method="post" id="uploadPhoto" action="galleryUpload?mnum=${m.mnum}&gseq=${galleryUpload.gseq}&mname=${m.mname}" enctype="multipart/form-data">
                                         <!-- 파일 업로드 폼 -->
                                         <div class="d-flex flex-row align-items-center mb-0">
                                             <div class="form-outline flex-fill mb-2">
+                                            <input type="hidden" value="${m.mnum}" name="mnum" />
+                                            <input type="hidden" value="${galleryUpload.gseq}" name="gseq" />
+                                            <input type="hidden" value="${m.mname}" name="mname" />
+                                            
                                                 <label class="form-label mb-0" for="form3Example1c"
                                                 >사진 선택</label
                                                 >

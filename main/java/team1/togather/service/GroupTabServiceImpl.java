@@ -171,6 +171,13 @@ public class GroupTabServiceImpl implements GroupTabService {
 	public Integer galleryPageCount(long gseq){
 		return groupTabMapper.galleryPageCount(gseq);
 	}
-	
+	@Override
+	public void galleryDelete(GroupTabGallery groupTabGallery) {
+		groupTabMapper.galleryDelete(groupTabGallery);
+	}
+	@Override
+	public Integer writerCheck(GroupTabGallery groupTabGallery) {
+		return groupTabMapper.writerCheck(groupTabGallery);
+	}
 
 }

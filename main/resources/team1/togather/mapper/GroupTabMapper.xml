@@ -124,10 +124,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</select>
 		<!-- 사진첩 업로드 -->
 		<insert id="galleryUpload" parameterType="GroupTabGallery">
-			insert into GROUP_GALLERY values(GAL_SEQ.nextval, #{gseq},#{mnum},#{mname},#{pname},2)
+			insert into GROUP_GALLERY values(GAL_SEQ.nextval, #{gseq},#{mnum},#{mname},#{pname},#{grade})
 		</insert>
 		<!-- 사진첩 페이지 계산-->
 		<select id="galleryPageCount" resultType="Integer">
 			select count(*) from GROUP_GALLERY where gseq=#{gseq}
 		</select>
+		<!-- 갤러리 사진 삭제시 본인 체 -->
+		<select id="writerCheck" resultType="Integer">
+			select count(*) from GROUP_GALLERY where galseq=#{galseq} and mnum=#{mnum}
+		</select>
+		<delete id="galleryDelete" parameterType="GroupTabGallery">
+			delete GROUP_GALLERY where galseq=#{galseq}
+		</delete>
 	</mapper>
