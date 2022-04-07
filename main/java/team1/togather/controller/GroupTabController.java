@@ -61,6 +61,9 @@ public class GroupTabController {
 		Long memInGroupCheck = groupTabService.memInGroupCheck(memInGroup);
 		List<Gathering> gatheringList = gatheringService.ga_selectByGseqS(gseq); //정모 목록 가져오기 (대현추가)
 		Long gatheringCountInGroup = groupTabService.gatheringCountInGroup(gseq);
+		log.info("#log.info"+groupInfo);
+		log.warn("#log.warn"+groupMemberCount);
+		log.fatal("#log.fatal"+memInGroupCheck);
 		ModelAndView mv = new ModelAndView("groupTab/groupInfo", "groupInfo", groupInfo);
 		mv.addObject("groupMemberCount", groupMemberCount);
 		mv.addObject("groupMemberName", groupMemberName);
