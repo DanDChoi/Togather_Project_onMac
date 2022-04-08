@@ -60,7 +60,7 @@
     <nav id="navbar" class="navbar order-last order-lg-0">
       <ul>
         <li><a class="active" href="/">Home</a></li>
-        <li><a href="notification/aboutUs">About</a></li>
+        <li><a href="about">About</a></li>
         <li><a href="board/listPage">게시판</a></li>
         <c:if test="${m ne null}">
           <li><a href="groupTab/myGroup.do?mnum=${m.mnum }">나의 모임</a></li><!--로그인시에만 보이게 하기-->
@@ -279,17 +279,17 @@
             <div class="testimonial-wrap">
               <div class="testimonial-item">
                 <img
-                        src="/assets/img/testimonials/testimonials-3.jpg"
+                        src="/assets/img/testimonials/bumsoo.jpg"
                         class="testimonial-img"
                         alt=""
                 />
                 <h3>박범수</h3>
-                <h4>팀원</h4>
+                <h4>모임게시판, 회원관리</h4>
                 <p>
                   <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Enim nisi quem export duis labore cillum quae magna enim
-                  sint quorum nulla quem veniam duis minim tempor labore
-                  quem eram duis noster aute amet eram fore quis sint minim.
+                  프로젝트를 진행하면서 다양한 난관을 거치면서 성취감과 동시에 재미를 느낄 수 있었으며,
+                  프로젝트 진행 전과 후를 비교해 보았을 때
+                  어느순간 한 단계 성장해있는 자신을 보면서 뿌듯함과 대견함을 느낄 수 있었습니다.
                   <i class="bx bxs-quote-alt-right quote-icon-right"></i>
                 </p>
               </div>

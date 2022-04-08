@@ -580,7 +580,7 @@
             <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
                 <div class="icon-box">
                     <i class="ri-book-2-line" style="color: #11dbcf"></i>
-                    <h3><a href="">인문학/책/글<a></h3>
+                    <h3><a href="">인문학/책/글</a></h3>
                 </div>
             </div>
             <div onClick="showInCate(this)" class="col-lg-3 col-md-4 mt-4">
