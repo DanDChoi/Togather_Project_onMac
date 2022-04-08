@@ -67,32 +67,32 @@
 			  cancelButtonColor: '#d33',
 			  confirmButtonText: 'Yes'
 			}).then((result) => {
-				if(result.isConfirmed){ 
-					if(${gatheringMemberCount} >= ${gatheringInfo.ga_limit}){
-						Swal.fire({
-							title: '정모 참여 인원이 다 찼습니다',
-							icon: 'warning',
-							showCancelButton: false,
-							confirmButtonColor: '#3085d6',
-							confirmButtonText: 'Yes'
-						});
-						return false;
-					}else{
-					var mnum = ${m.mnum};
-		  			var ga_seq = ${gatheringInfo.ga_seq};
-		  			var result = {"mnum":mnum,"ga_seq":ga_seq};
-			  		$(function(){
-	  				$.ajax({
-		   					url: "memInGathering.json",
-		   					type: "POST",
-		   					data: result,
-		   					success: function(data){
-		   					}
-	  				});
-	  				location.reload(); 
-			  		});
-				  }
-				}
+				console.log(result.isConfirmed);
+				if(${gatheringMemberCount} >= ${gatheringInfo.ga_limit}){
+					Swal.fire({
+						title: '정모 참여 인원이 다 찼습니다',
+						icon: 'warning',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Yes'
+					});
+					return false;
+				}else if (result.isConfirmed) {
+				var mnum = ${m.mnum};
+	  			var ga_seq = ${gatheringInfo.ga_seq};
+	  			var result = {"mnum":mnum,"ga_seq":ga_seq};
+		  		$(function(){
+  				$.ajax({
+	   					url: "memInGathering.json",
+	   					type: "POST",
+	   					data: result,
+	   					success: function(data){
+	   					}
+  				});
+  				location.reload(); 
+		  		});
+		  		
+			  }  			  
 			});
     	}
 	
@@ -217,6 +217,7 @@
   <body>
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
+    <input type="hidden" id="acodeId" value=""/>
       <div class="container d-flex align-items-center">
         <h1 class="logo me-auto"><a href="../">Togather</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
@@ -307,6 +308,7 @@
 				var count = 0;
 				var ps = new kakao.maps.services.Places();
 				var bounds = new kakao.maps.LatLngBounds();
+				var checkCoor;
 				if (inputData != null) {
 					kewwordSearch(inputData[count]);
 				}
@@ -325,15 +327,88 @@
 							}
 					}
 				}
+				var ma;
+				var la;
+				var wf3Am, wf3Pm, wf4Am, wf4Pm, wf5Am, wf5Pm, wf6Am, wf6Pm, wf7Am, wf7Pm;
+				var geocoder = new kakao.maps.services.Geocoder();
+				var callback = function(result, status) {
+				    if (status === kakao.maps.services.Status.OK) {
+				        console.log('지역 명칭 : ' + result[0].address_name);
+				        console.log('행정구역 코드 : ' + result[0].code);
+				        $('#acodeId').val(result[0].code);
+				        var applidate = $('#applidate').text();
+				        console.log("applidate: "+applidate);
+				        $.ajax({
+			  				url:"getWeather",
+			  				type:"GET",
+			  				dataType:"json",
+			  				contentType: "application/json",
+			  				data: {
+			  					La:la,
+			  					Ma:ma,
+			  					Acode:result[0].code,
+			  					appliDate:applidate
+			  				},
+			  				success: function(result){
+			  					console.log("success: "+result);
+			  					console.log("result wf5Pm: "+result.wf5Pm);
+			  					$('#dateInfo').text("남은 일 수: "+result.diffDate +" (한 주 날씨 클릭)");
+			  					wf3Am=result.wf3Am;
+			  					wf3Pm=result.wf3Pm;
+			  					wf4Am=result.wf4Am;
+			  					wf4Pm=result.wf4Pm;
+			  					wf5Am=result.wf5Am;
+			  					wf5Pm=result.wf5Pm;
+			  					wf6Am=result.wf6Am;
+			  					wf6Pm=result.wf6Pm;
+			  					wf7Am=result.wf7Am;
+			  					wf7Pm=result.wf7Pm;
+			  				},
+			  				error: function(error){
+			  					console.log("fail: "+error);
+			  				}
+			  			});
+				    }
+				}; 
+				var climateFlag=0;
+				function getClimate(e){ 
+					if(climateFlag==0){
+						$('#clioption').remove();
+						$('#climateInfo').after(
+							"<div id=\"clioption\" class=\"course-info d-flex justify-content-between align-items-center\"> "	
+							+" <p>3일뒤 오전날씨: "+wf3Am+" 오후날씨: "+wf3Pm+"<br>"
+							+" 4일뒤 오전날씨: "+wf4Am+" 오후날씨: "+wf4Pm+"<br>"
+							+" 5일뒤 오전날씨: "+wf5Am+" 오후날씨: "+wf5Pm+"<br>"
+							+" 6일뒤 오전날씨: "+wf6Am+" 오후날씨: "+wf6Pm+"<br>"
+							+" 7일뒤 오전날씨: "+wf7Am+" 오후날씨: "+wf7Pm+"</p>"
+							+"</div>"
+						);
+						climateFlag = 1;
+					}else{
+						$('#clioption').remove();
+						climateFlag = 0;
+					}
+				}
 				function displayMarker(place) {
 					var marker = new kakao.maps.Marker({
 						map: map,
-						position: new kakao.maps.LatLng(place.y, place.x),
+						position: new kakao.maps.LatLng(place.y, place.x)
 					});
+					var acode1 = geocoder.coord2RegionCode(place.x, place.y, callback);
+ 					var acode = $('#acodeId').val();
+ 					console.log("acode타입: "+typeof(acode));
+ 					String(acode);
+					console.log("acode: "+acode);
+					console.log("acode타입: "+typeof(acode));
+					console.log(marker.getPosition());
+					var coord = new kakao.maps.LatLng(place.y, place.x);		
+					la = place.y;
+					ma = place.x;
 					kakao.maps.event.addListener(marker, 'click', function () {
 						var position = this.getPosition();
 						var url = 'https://map.kakao.com/link/map/' + place.id;
 						window.open(url, '_blank');
+						console.log(checkCoor);
 					});
 				}
 				function setBounds() {
@@ -355,7 +430,7 @@
                 class="course-info d-flex justify-content-between align-items-center"
               >
                 <h5><i class="bi bi-calendar4"></i></h5>
-                <p>${gatheringInfo.ga_date}</p>
+                <p id="applidate">${gatheringInfo.ga_date}</p>
               </div>
               <div
                 class="course-info d-flex justify-content-between align-items-center"
@@ -369,7 +444,15 @@
               >
                 <h5><i class="bi bi-geo-alt"></i></h5>
                 <p>${gatheringInfo.ga_place}</p>
+               
               </div>
+               <div id="climateInfo" onclick="getClimate(this)" 
+                class="course-info d-flex justify-content-between align-items-center"
+              >
+                <h5><i class="bi bi-geo-alt"></i></h5>
+                <p id="dateInfo">해당일 정보</p>
+              </div>
+             
               <div
                 class="course-info d-flex justify-content-between align-items-center"
               >
@@ -389,19 +472,19 @@
 	              <ul>
 	              <c:forEach var="memInGatheringName" items="${memInGatheringName}" varStatus="index">
 		              <c:choose>
-			              <c:when test="${memInGatheringName.Grade eq 0}">
+			              <c:when test="${memInGatheringName.GRADE eq 0}">
 			              	<c:set var="grade" value="모임장"/>
 			              </c:when>
-			              <c:when test="${memInGatheringName.Grade eq 1}">
+			              <c:when test="${memInGatheringName.GRADE eq 1}">
 			              	<c:set var="grade" value="운영진"/>
 			              </c:when>
 			              <c:otherwise>
 			              	<c:set var="grade" value=""/>
 			              </c:otherwise>
 		              </c:choose>
-		              <c:choose>
-			              <c:when test="${m.mnum eq memInGatheringNmae.MNUM}">
-			                <li><a href="javascript:void(0)">${memInGatheringName.MNAME}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${grade}</a></li>
+		               <c:choose>
+			              <c:when test="${m.mnum eq memInGatheringName.MNUM}">
+			                <li><a href="javascript:void(0)">${memInGatheringName.MNAME}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${grade}(나)</a></li>
 			              </c:when>
 			              <c:otherwise>  
 			                <li><a href="javascript:void(0)" onclick="location.href='javascript:memberInfo(${index.index})'">${memInGatheringName.MNAME}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${grade}</a></li>

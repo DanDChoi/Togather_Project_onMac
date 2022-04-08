@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=utf-8" session="false" %>
+<%@ page contentType="text/html;charset=utf-8" session="true" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,28 +43,88 @@
     <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
     <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
     <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
-
+    <!-- alert -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+     <!-- alert -->
+	<script type="text/javascript" language="javascript" 
+		     src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet" />
+    <script>
+    window.onload = function() {
+		today = new Date();
+		console.log("today.toISOString() >>>" + today.toISOString());
+		today = today.toISOString().slice(0, 10);
+		console.log("today >>>> " + today);
+		bir = document.getElementById("now_date");
+		bir.value = today;
+		bir.min= bir.value;
+
+		document.getElementById('time').value = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(11, 16);
+		console.log(new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString());
+	}
+    
+    function Check(){
+    	today = new Date();
+    	today = today.toISOString().slice(0, 10);
+    	bir = document.getElementById("now_date");
+    	var mindate = bir.min;//여기까지 현재날짜
+    	
+    	var nowTime = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString();
+    	var nowDateCheck= document.getElementById('now_date').value;
+    	var nowTimeCheck=nowDateCheck;
+    	nowTimeCheck+="T";
+    	nowTimeCheck+= document.getElementById('time').value;
+    	//var nowTimeCheck = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11);
+		
+		console.log("nowTime: "+nowTime);
+		console.log("nowTimeCheck: "+nowTimeCheck);
+	
+    	if(bir.value<today){
+    		Swal.fire({
+				title:"날짜는 오늘 이후로만 가능합니다.",
+				icon:"error"
+				});
+    		return false;
+    	}else if(nowTimeCheck<nowTime){
+    		Swal.fire({
+				title:"시간은 현재시간 이후로만 가능합니다.",
+				icon:"error"
+				});
+    		return false;
+    	}else if($('#ga_name').val()=="" || $('#time').val()=="" || $('#placeParent').val()=="" || $('#now_date').val()=="" || $('#price').val()=="" || $('#ga_limit').val()==""){
+    		Swal.fire({
+				title:"모든 항목을 입력해주세요.",
+				icon:"error"
+				});
+    		return false;
+    	}else{
+    		f.submit();
+    	}
+    	
+    }
+	</script>
+
   </head>
 
   <body>
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
       <div class="container d-flex align-items-center">
-        <h1 class="logo me-auto"><a href="index.html">Togather</a></h1>
+        <h1 class="logo me-auto"><a href="/">Togather</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html" class="logo me-auto"><img src="/assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
         <nav id="navbar" class="navbar order-last order-lg-0">
           <ul>
-            <li><a class="active" href="index.html">Home</a></li>
+            <li><a class="active" href="/">Home</a></li>
             <li><a href="about.html">About</a></li>
-            <li><a href="myGroup.html">나의 모임</a></li>
+            <li><a href="../groupTab/myGroup.do?mnum=${m.mnum }">나의 모임</a></li>
             <!--로그인시에만 보이게 하기-->
-            <li><a href="boardMain.html">게시판</a></li>
+            <li><a href="../board/listPage">게시판</a></li>
             <li>
-              <a href="wishlist.html"
+              <a href="../wishTab/wishList?mnum=${m.mnum }"
                 >찜목록
                 <span class="badge bg-dark text-white ms-1 rounded-pill"
                   >0</span
@@ -77,21 +137,34 @@
                 ><span>고객지원</span> <i class="bi bi-chevron-down"></i
               ></a>
               <ul>
-                <li><a href="notice.html">공지사항</a></li>
-                <li><a href="FAQ.html">자주묻는 질문</a></li>
-                <li><a href="QA.html">Q&A</a></li>
+                <li><a href="../notification/notice">공지사항</a></li>
+                <li><a href="../faq/listPage">자주묻는 질문</a></li>
+                <li><a href="qa">Q&A</a></li>
                 <li><a href="contact.html">Contact</a></li>
               </ul>
             </li>
-            <li><a href="login.html">로그인</a></li>
+            <c:choose>
+           		<c:when test="${m eq null}">
+            		<li><a href="member/login.do">로그인 ${sessionScope.m} </a></li>
+        		</c:when>
+          		<c:otherwise>
+            		<li><a href="javascript:void(0);" onclick="signout();">로그아웃</a></li>
+            	</c:otherwise>
+         </c:choose>
           </ul>
           <i class="bi bi-list mobile-nav-toggle"></i>
         </nav>
         <!-- .navbar -->
 
         <!--로그인전에는 회원가입만 보이고 로그인하면 모임만들기만 보이게 하는건 어떤지??-->
-        <a href="join.html" class="get-started-btn">회원가입</a>
-        <a href="groupCreate.html" class="get-started-btn">모임만들기</a>
+        <c:choose>
+           		<c:when test="${m eq null}">
+		        	<a href="../member/joinform.do" class="get-started-btn">회원가입</a>
+		        </c:when>
+		        <c:otherwise>
+        			<a href="../groupTab/groupCreate.do" class="get-started-btn">모임만들기</a>
+        		</c:otherwise>
+         </c:choose>
       </div>
     </header>
     <!-- End Header -->
@@ -114,56 +187,70 @@
               <form name="f" action="gatheringCreate.do?gseq=${groupInfo.gseq}&mnum=${m.mnum}" method="post">
                 <div class="form-outline mb-4">
                   <input
+                  	id="ga_name"
                     type="text"
                     name="ga_name"
                     class="form-control form-control-lg"
                     placeholder="정모이름"
+                   
                   />
                 </div>
                 <div class="form-outline mb-4">
                   <input
+                  	id="placeParent"
                     type="text"
                     name="ga_place"
                     class="form-control form-control-lg"
                     placeholder="장소"
-                  />
+                    
+                  /><button  style='float: right;' id='searchButton' type='button' class='btn btn-success' onclick='searchMap()'>장소 검색하기</button>
+                  
                 </div>
                 <div class="form-outline mb-4">
                   <input
+                  	id="time"
                     type="time"
                     name="time"
                     class="form-control form-control-lg"
                     placeholder="시간"
+                    
                   />
                 </div>
                 <div class="form-outline mb-4">
                   <input
+                  	id="now_date"
                     type="date"
                     name="ga_date"
                     class="form-control form-control-lg"
                     placeholder="날짜"
+                    max="2022-12-31"
+                    
                   />
                 </div>
                 <div class="form-outline mb-4">
                   <input
+                  	id="price"
                     type="text"
                     name="price"
                     class="form-control form-control-lg"
                     placeholder="회비"
+                    
                   />
                 </div>
                 <div class="form-outline mb-4">
                   <input
+                  	id="ga_limit"
                     type="number"
                     name="ga_limit"
                     class="form-control form-control-lg"
                     min="2"
                     max="20"
                     placeholder="정원(2~20명)"
+                    
                   />
                 </div>
 
-                <button class="btn btn-success" type="submit">만들기</button>
+                <button class="btn btn-success" type="button" onclick="Check()">만들기</button>
                 <button class="btn btn-secondary">취소</button>
               </form>
             </div>
@@ -286,5 +373,14 @@
 
     <!-- Template Main JS File -->
     <script src="/assets/js/main.js"></script>
+    <script>
+		function searchMap(){
+			window.name="parentForm";
+			openWin = window.open(
+        	  "gatheringSearchMap.do", "gatheringSearchMap", 
+        	   "width=1000, height=530, top=100, left=100");
+		}
+	</script>
   </body>
 </html>
+

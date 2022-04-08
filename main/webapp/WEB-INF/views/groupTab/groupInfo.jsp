@@ -53,6 +53,79 @@
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet" />
     <script type="text/javascript">
+    $(function(){
+   		document.getElementById('my_btn').click();
+   	});
+    function endTimeGatheringCheck(EndCheck,noticeCheck){
+    	if(EndCheck!=null && noticeCheck==0){
+	    		$('#count').hide();
+	        	var endDayCheck;
+	        	var endTimeCheck; 
+	        	
+	        	var timeName;
+	    		endDayCheck="${endTimeGathering.ga_date}";
+	    		endTimeCheck="${endTimeGathering.time}";
+	    		var dday = new Date(endDayCheck+" "+endTimeCheck).getTime();
+	    		//setInterval(function() {
+	       		var today = new Date().getTime();
+	       		 var gap = dday - today;
+	       			var day = Math.floor(gap / (1000 * 60 * 60 * 24));
+	       		  if(0<=day && day<7){
+		       		  var hour = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		       		  var min = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+		       		  var sec = Math.floor((gap % (1000 * 60)) / 1000);
+		       		  document.getElementById("count").innerHTML = "${name}님의 모임(${gatheringName})이 D-DAY까지 " + day + "일 " + hour + "시간 " + min + "분 " + sec + "초 남았습니다.";
+		       		  
+		       		  $('#hiddenInput').val($('#count').text());
+	       		  }	 
+	       		//}, 1000);
+	       		timeName+=$('#hiddenInput').val();
+	       		if(0<=day && day<7){	
+	       			var ga_seq=${notice.ga_seq};
+	       			checkTime(ga_seq);
+	       		}
+    	}
+	    
+    }
+
+    	
+    function checkTime(ga_seq){
+    	const Toast = Swal.mixin({
+			  toast: true,
+			  position: 'top-end',
+			  showConfirmButton: true,
+			  showCancelButton: true,
+			  confirmButtonText : "알림 끄기",
+			  timer: 3000,
+			  timerProgressBar: true,
+			  didOpen: (toast) => {
+			    toast.addEventListener('mouseenter', Swal.stopTimer);
+			    toast.addEventListener('mouseleave', Swal.resumeTimer);
+			  }
+		})
+		Toast.fire({
+		  icon: 'success',
+		  title: $('#hiddenInput').val()
+		}).then((result) => {
+		  if (result.isConfirmed) {//여기에 로직 메세지 이동하는
+			  var mnum = ${m.mnum};
+			  var result = {"ga_seq":ga_seq,"mnum":mnum};
+				  $.ajax({
+	   					url: "noticeChecked.json",
+	   					type: "POST",
+	   					data: result,
+	   					success: function(data){
+	   						console.log(data);
+	   					}
+				});
+
+			  } else if (
+			    result.dismiss === Swal.DismissReason.cancel
+			  ) {//여기에 로직 알림끄는 
+
+			  }	 
+		})
+    }
     
     function groupJoin(){
     	Swal.fire({
@@ -80,8 +153,7 @@
 		   							});
 		   						}else{
 		   							location.reload();
-		   						}
-		   						
+		   						}	
 		   					}
 	  				});
 			  }  			  
@@ -118,29 +190,41 @@
     	}
     	
     	function groupDeleteCheck(){ 
-    		var mnum = ${m.mnum};
-  			var gseq = ${groupInfo.gseq};
-  			var result = {"mnum":mnum,"gseq":gseq};
-	   			$(function(){
-    				$.ajax({
-	   					url: "groupDeletecheck.json",
-	   					type: "POST",
-	   					data: result,
-	   					success: function(data){
-	   						if(data==0){//모임장일때일때
-	   							groupDelete();
-	   							console.log("check0: "+data);
-	   						}else{//모임장 아닐때
-	   							console.log("check1: "+data);
-	   							Swal.fire({
-		  							  title: "모임장만 삭제 가능합니다",
-		  							  icon: "error"
-	   							});
-	   						}
-	   					}
-	   				});  
-	   			});
-    	}
+            var mnum = ${m.mnum};
+             var gseq = ${groupInfo.gseq};
+             var result = {"mnum":mnum,"gseq":gseq};
+                 $(function(){
+                  $.ajax({
+                       url: "groupDeletecheck.json",
+                       type: "POST",
+                       data: result,
+                       success: function(data){
+                          if(data==0){//모임장일때일때
+                             Swal.fire({
+                               title: '모임을 삭제 하시겠습니까?',
+                               icon: 'question',
+                               showCancelButton: true,
+                               confirmButtonColor: '#3085d6',
+                               cancelButtonColor: '#d33',
+                               confirmButtonText: 'Yes'
+                             }).then((result) => {
+                                console.log(result.isConfirmed);
+                               if (result.isConfirmed) {
+                                   groupDelete();
+                               }
+                             });
+                             console.log("check0: "+data);
+                          }else{//모임장 아닐때
+                             console.log("check1: "+data);
+                             Swal.fire({
+                                 title: "모임장만 삭제 가능합니다",
+                                 icon: "error"
+                             });
+                          }
+                       }
+                    });  
+                 });
+         }
     	
     	function groupUpdateCheck(){ 
     		var mnum = ${m.mnum};
@@ -256,7 +340,6 @@
     	}
     	</script>
     </c:forEach>
-
     <!-- 04/05 대현추가 (사진첩 멤버체크)-->
     <c:forEach items="${memInGroupName}" var="memInGroupName">
     <script type="text/javascript">
@@ -288,7 +371,7 @@
     	</script>
     </c:forEach>
     <!-- 04/05 대현추가 끝-->
-
+    
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script>
         Kakao.init('11400a9267d93835389eb9255fcaad0b');
@@ -307,8 +390,23 @@
   </head>
 
   <body>
+	<c:choose>
+		<c:when test="${endTimeGathering eq null}">
+			<c:set value="null" var="endTimeGathering"/>
+		</c:when>
+		<c:otherwise>
+			<c:set value="1" var="endTimeGathering"/>
+		</c:otherwise>
+	</c:choose>
+		<input 
+		  id='my_btn'
+		  type='button' 
+		  onclick="endTimeGatheringCheck(${endTimeGathering},${notice.notice})"
+		  />
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
+    <div id="count" ></div>
+    <input id="hiddenInput" type="hidden"  value=""/>
       <div class="container d-flex align-items-center">
         <h1 class="logo me-auto"><a href="../">Togather</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
@@ -489,8 +587,7 @@
 			                	<c:choose>
 				                	<c:when test="${m.mnum eq memInGroupName.MNUM}">
 				                		<li><a href="javascript:void(0)">		           
-					                	${memInGroupName.MNAME}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${grade}</a>
-					                	
+					                	${memInGroupName.MNAME}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${grade}(나)</a>    	
 					                	</li>
 				                	</c:when>
 				                	<c:otherwise>

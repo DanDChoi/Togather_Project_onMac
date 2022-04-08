@@ -164,7 +164,7 @@
                     type="text"
                     name="ga_date"
                     class="form-control form-control-lg"
-                    placeholder="${updateList.ga_date}"
+                    value="${updateList.ga_date}"
                     disabled
                   />
                 </div>

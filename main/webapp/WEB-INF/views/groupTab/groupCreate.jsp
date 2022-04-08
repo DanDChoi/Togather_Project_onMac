@@ -44,17 +44,231 @@
     <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
     <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
     <link href="/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
-
+	<!-- alert -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+     <!-- alert -->
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet" />
+    <script type="text/javascript" 
+		     src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script>
+
+    function reset(){
+		if($('#category_firstCheck1').val()!=1){
+			$('#category_first1').val("");
+			console.log("카테고리1");
+		}
+		$('#ul2').remove();
+		$('#ul3').remove();
+		$('#button2').remove();
+		$('#button3').remove();
+		
+		$('#Selectbutton').remove();
+		var div2="";
+		div2+="<button id='button2' type='button' class='btn btn-outline-light dropdown-toggle' onclick='javascript:reset2()' data-bs-toggle='dropdown' aria-expanded='false' style='color: black; border-color: black'>";
+		div2+="<span id='span2'>하위관심사</span>";
+		div2+="</button>";
+		div2+="<ul id='ul2' class='dropdown-menu'>";
+		div2+="</ul>";
+		$('#div2').after(                     
+			div2              		
+		);
+		var div3="";
+		div3+="<button id='button3' type='button' class='btn btn-outline-light dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false' style='color: black; border-color: black'>";
+		div3+="<span id='span3'>세부관심사</span>";
+		div3+="</button>";
+		div3+="<ul id='ul3' class='dropdown-menu'>";
+		div3+="</ul>";
+		$('#div3').after(                     
+			div3              		
+		);
+		$('#button2').hide();
+		$('#button3').hide();
+	}
+    
+    function reset2(){
+		if($('#category_firstCheck1').val()!=1){
+			$('#category_first1').val("");
+			console.log("카테고리1");
+		}
+		$('#ul3').remove();
+		$('#button3').remove();
+		$('#Selectbutton').remove();
+		var div3="";
+		div3+="<button id='button3' type='button' class='btn btn-outline-light dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false' style='color: black; border-color: black'>";
+		div3+="<span id='span3'>세부관심사</span>";
+		div3+="</button>";
+		div3+="<ul id='ul3' class='dropdown-menu'>";
+		div3+="</ul>";
+		$('#div3').after(                     
+			div3              		
+		);
+		$('#button3').hide();
+	}
+	
+	function reset3(){
+		if($('#category_firstCheck1').val()!=1 ){
+			$('#category_first1').val("");
+			console.log("카테고리1");
+		}
+	}
+    function selectedCategory(){
+    	let categoryValue1 =$('#category_first1').val();
+    	if($('#category_first1').val()!=""){
+			let selectedText1="";
+			selectedText1+="<input id='category_first' type='text' name='interest' style='width:100px;height:50px;' value='"+categoryValue1+"' readonly>";
+			$('#div1').append(                     
+					selectedText1              		
+			);
+			$('#category_firstCheck1').val("1");
+			$('#button1').remove();
+			$('#button2').remove();
+			$('#button3').remove();
+			$('#Selectbutton').remove();
+		}
+    }
+    
+    
+    
+    
+    <c:set var="firstCategory1" value="${firstCategory}"/>
+    	function categorys(sequence,i){
+    		if(sequence==1){
+    			$('#button2').hide();
+    			$('#button3').hide();
+    			let catagory="";	
+    			catagory+="<c:forEach items='${firstCategory1}' var='firstCategory' varStatus='index'>";
+    			catagory+="<li><a id='li${index.index}' class='dropdown-item' href='javascript:categorys(2,${index.index})' onclick='javascript:reset()' data-value='${firstCategory.int_out}'>${firstCategory.int_out}</a></li>";
+    			catagory+="</c:forEach>";
+    			$('#ul1').append(                     
+    					catagory              		
+    			);
+    		}else if(sequence==2){
+    			$('#button2').show();
+    			let index="li";
+    			index+=i;
+    			let categoryValue=document.getElementById(index).getAttribute('data-value');
+    			$('#span1').text(categoryValue);
+    			var result = {"int_out":categoryValue,"sequence":sequence};
+    			$.ajax({
+    				url: "../member/category.json",
+    				type: "GET",
+    				data: result,
+    				success: function(data){
+    					var secondCategory=data;
+    					let catagory="";
+    					for(var i =0;i<data.length;i++){
+    						let idNum=i;
+    						catagory+="<li><a id='"+i+"' class='dropdown-item' href='javascript:categorys(3,"+i+")' onclick='javascript:reset2()' data-value='"+secondCategory[i].int_in+"'>"+secondCategory[i].int_in+"</a></li>";
+    					}	
+    					
+    					$('#ul2').append(                     
+    							catagory              		
+    					);
+    				}
+    			});
+    		}else if(sequence==3){
+    			let index=i;
+    			let categoryValue=document.getElementById(index).getAttribute('data-value');
+    			$('#span2').text(categoryValue);
+    			var result = {"int_in":categoryValue,"sequence":sequence};
+    			$.ajax({
+    				url: "../member/category.json",
+    				type: "GET",
+    				data: result,
+    				success: function(data){
+    					var thirdCategory=data;
+    					let catagory="";
+    					if(Object.keys(data).length!=1){
+    						$('#button3').show();
+    						for(var i =0;i<data.length;i++){
+    							catagory+="<li><a id='"+i+"li' class='dropdown-item' href='javascript:categorys(4,"+i+")' onclick='reset3()' data-value='"+thirdCategory[i].first_option+"'>"+thirdCategory[i].first_option+"</a></li>";
+    						}
+    						$('#ul3').append(                     
+    								catagory              		
+    						);
+    					}else{
+    						if($('#category_first1').val()==""){
+    							$('#category_first1').val(categoryValue);
+    						}
+    						let catagoryButton="<button id='Selectbutton' type='button' class='btn btn-secondary' onclick='selectedCategory()'>선택</button>";
+    						console.log("엘스안 categoryValue: "+categoryValue);
+    						$('#Cancelbutton').before(                     
+    								catagoryButton              		
+    							);
+    					}
+    					
+    				}
+    			});
+    		}else if(sequence==4){
+    			$('#Selectbutton').remove();
+    			var index=i;
+    			index+="li";
+    			let categoryValue=document.getElementById(index).getAttribute('data-value');
+    			$('#span3').text(categoryValue);
+    			if($('#category_first1').val()=="" ){
+    				$('#category_first1').val(categoryValue);
+    			}
+    			let catagoryButton="<button id='Selectbutton' type='button' class='btn btn-secondary' onclick='selectedCategory()'>선택</button>";
+    			$('#Cancelbutton').before(                     
+    				catagoryButton              		
+    			);
+    		}else if(sequence==6){
+    			$('#category_first1').val("");
+    			$('#category_firstCheck1').val("");
+    			$('#category_first').remove();
+    			$('#button1').remove();
+    			$('#button2').remove();
+    			$('#button3').remove();
+    			$('#ul1').remove();
+    			$('#ul2').remove();
+    			$('#ul3').remove();
+    			$('#span1').remove();
+    			$('#span2').remove();
+    			$('#span3').remove();
+    			$('#Selectbutton').remove();
+    			var div1="";
+    			div1+="<button id='button1' type='button' class='btn btn-outline-light dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false' style='color: black; border-color: black'>";
+    			div1+="<span id='span1'>관심사</span>";
+    			div1+="</button>";
+    			div1+="<ul id='ul1' class='dropdown-menu'>";
+    			div1+="<c:forEach items='${firstCategory1}' var='firstCategory' varStatus='index'>";
+    			div1+="<li><a id='li${index.index}' class='dropdown-item' href='javascript:categorys(2,${index.index})'  onclick='javascript:reset()' data-value='${firstCategory.int_out}'>${firstCategory.int_out}</a></li>";
+    			div1+="</c:forEach>";
+    			div1+="</ul>";		
+    			$('#div1').after(                     
+    				div1              		
+    			);
+    			var div2="";
+    			div2+="<button id='button2' type='button' class='btn btn-outline-light dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false' style='color: black; border-color: black'>";
+    			div2+="<span id='span2'>하위관심사</span>";
+    			div2+="</button>";
+    			div2+="<ul id='ul2' class='dropdown-menu'>";
+    			div2+="</ul>";
+    			$('#div2').after(                     
+    				div2              		
+    			);
+    			var div3="";
+    			div3+="<button id='button3' type='button' class='btn btn-outline-light dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false' style='color: black; border-color: black'>";
+    			div3+="<span id='span3'>세부관심사</span>";
+    			div3+="</button>";
+    			div3+="<ul id='ul3' class='dropdown-menu'>";
+    			div3+="</ul>";
+    			$('#div3').after(                     
+    				div3              		
+    			);
+    			$('#button2').hide();
+    			$('#button3').hide();
+    		}
+    	}
 		window.history.forward();
 	 	function noBack(){window.history.forward();}
 	</script>
     
   </head>
 
-  <body onload="noBack();" onpageshow="if(event.persisted) noBack();" onunload="">
+  <body onload="noBack();categorys(1,0)" onpageshow="if(event.persisted) noBack();" onunload="">
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top">
       <div class="container d-flex align-items-center">
@@ -121,20 +335,21 @@
       </div>
 
       <section
-        class="vh-100"
+        class="h-auto"
         style="background-color: #eee; box-sizing: content-box"
       >
         <div class="container h-100" data-aos="flip-down">
           <div
-            class="row d-flex justify-content-center align-items-center h-100"
+            class="row d-flex justify-content-center align-items-center h-auto"
           >
             <div class="col-lg-12 col-xl-11">
               <div class="card text-black" style="border-radius: 25px">
                 <div class="card-body p-md-5">
                   <div class="row justify-content-center">
-                    <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                  <!-- col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1 -->
+                    <div style="width:auto">
                       <!--모임지역/이름/모임소개/관심사/정원/모임사진-->
-                      <form class="mx-1 mx-md-4" method="post" action="groupCreate.do?mnum=${m.mnum }" enctype="multipart/form-data">
+                      <form id="form" class="mx-1 mx-md-4" method="post" action="groupCreate.do?mnum=${m.mnum}" enctype="multipart/form-data">
                         <div class="d-flex flex-row align-items-center mb-0">
                           <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div class="form-outline flex-fill mb-2">
@@ -142,7 +357,7 @@
                               >모임지역</label
                             >
 	                          <div class="col-md-4">
-				                <select class="form-select border-0 py-3" name="gloc" required="required">
+				                <select class="form-select border-0 py-3" name="gloc">
 				                  <option selected disabled>지역</option>
 				                  <option value="서울">서울</option>
 				                  <option value="경기">경기</option>
@@ -192,32 +407,54 @@
                           </div>
                         </div>
 						
-						<div class="d-flex flex-row align-items-center mb-0">
+						<div id="selectdiv1" class="d-flex flex-row align-items-center mb-0">
                           <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                          <div class="form-outline flex-fill mb-2">
-                            <label class="form-label mb-0" for="form3Example4cd"
-                              >관심사</label
-                            >
-                            <div class="col-md-4">
-				                <select class="form-select border-0 py-3" name="interest">
-				                  <option selected disabled>관심사</option>
-				                  <option value="아웃도어/여행">아웃도어/여행</option>
-				                  <option value="외국/언어">외국/언어</option>
-				                  <option value="음악/악기">음악/악기</option>
-				                  <option value="차/오토바이">차/오토바이</option>
-				                  <option value="요리/제조">요리/제조</option>
-				                  <option value="업종/직무">업종/직무</option>
-				                  <option value="문화/공연/축제">문화/공연/축제</option>
-				                  <option value="공예/만들기">공예/만들기</option>
-				                  <option value="댄스/무용">댄스/무용</option>
-				                  <option value="봉사활동">봉사활동</option>
-				                  <option value="인문학/책/글">인문학/책/글</option>
-				                  <option value="사진/영상">사진/영상</option>
-				                  <option value="게임/오락">게임/오락</option>
-				                  <option value="반려동물">반려동물</option>
-				                  <option value="자유주제">자유주제</option>
-				                </select>
-				            </div>
+                          <div class="form-outline flex-fill mb-0">
+                            <div id="div1" class="btn-group">
+									<button id="button1"
+									  type="button"
+									  class="btn btn-outline-light dropdown-toggle"
+									  data-bs-toggle="dropdown"
+									  aria-expanded="false"
+									  style="color: black; border-color: black">
+									<span id='span1'>관심사</span>
+									</button>
+									<ul id="ul1" class="dropdown-menu">
+									</ul>
+								  </div>
+							
+								  <div id="div2" class="btn-group" style="margin-left: 5px">
+									<button
+									  type="button" id="button2"
+									  class="btn btn-outline-light dropdown-toggle"
+									  data-bs-toggle="dropdown"
+									  aria-expanded="false"
+									  style="color: black; border-color: black">
+									<span id='span2'>하위관심사</span>
+									</button>
+									<ul id="ul2" class="dropdown-menu">
+									</ul>
+								  </div>
+							
+								  <div id="div3" class="btn-group" style="margin-left: 5px">
+									<button
+									  type="button" id="button3"
+									  class="btn btn-outline-light dropdown-toggle"
+									  data-bs-toggle="dropdown"
+									  aria-expanded="false"
+									  style="color: black; border-color: black">
+										<span id='span3'>세부관심사</span> 
+									</button>
+									<ul id="ul3" class="dropdown-menu">
+									</ul>
+								  </div>
+ 									<input id="category_first1" type="hidden"  value="">	
+ 									
+ 									<input id="category_firstCheck1" type="hidden"  value="">	
+ 									
+ 									
+ 									<button id='Cancelbutton' type='button' class='btn btn-secondary' onclick='categorys(6,0)' style="margin-left:5px" >취소</button>
+ 									                  
                           </div>
                         </div>
                         
@@ -265,7 +502,7 @@
                           >
                             개설
                           </button>
-                          <button type="button" class="btn btn-secondary">
+                          <button type="button" class="btn btn-secondary" >
                             취소
                           </button>
                         </div>

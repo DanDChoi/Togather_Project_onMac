@@ -2,16 +2,21 @@ package team1.togather.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +27,19 @@ import org.springframework.web.servlet.ModelAndView;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import team1.togather.domain.*;
+import team1.togather.domain.Category;
+import team1.togather.domain.Gathering;
+import team1.togather.domain.GroupTab;
+import team1.togather.domain.GroupTabGallery;
+import team1.togather.domain.IndexCriteria;
+import team1.togather.domain.IndexPage;
+import team1.togather.domain.MemInGathering;
+import team1.togather.domain.MemInGroup;
+import team1.togather.domain.Member;
 import team1.togather.fileset.Path;
 import team1.togather.service.GatheringService;
 import team1.togather.service.GroupTabService;
+import team1.togather.service.MemberService;
 
 @Log4j
 @Controller
@@ -36,16 +50,18 @@ public class GroupTabController {
 	private GroupTabService groupTabService;
 	@Autowired
 	private GatheringService gatheringService;
+	@Autowired
+	private MemberService memberService;
 
 
 	@GetMapping("myGroup.do")
 	public ModelAndView myGroup(MemInGroup memInGroup) {
 		List<GroupTab> list = groupTabService.myGroup(memInGroup);
 		List<Long> groupMemberCount = new ArrayList<>();
-		for (int i = 0; i < list.size(); i++) {
+		for(int i =0;i<list.size();i++) {
 			groupMemberCount.add(groupTabService.groupMemberCount(list.get(i).getGseq()));
 		}
-		List<Member> namelist = groupTabService.selectAllname();
+		List<String> namelist = groupTabService.selectAllname(memInGroup.getMnum());
 		ModelAndView mv = new ModelAndView("groupTab/myGroup", "list", list);
 		mv.addObject("groupMemberCount", groupMemberCount);
 		mv.addObject("namelist", namelist);
@@ -53,33 +69,94 @@ public class GroupTabController {
 	}
 
 	@GetMapping("groupInfo.do")
-	public ModelAndView groupInfo(long gseq, MemInGroup memInGroup) {
+	public ModelAndView groupInfo(long gseq,MemInGroup memInGroup, HttpSession session) throws ParseException {
 		GroupTab groupInfo = groupTabService.selectByGSeqS(gseq);
 		Long groupMemberCount = groupTabService.groupMemberCount(gseq);
 		Member groupMemberName = groupTabService.groupInfoMemberName(gseq);
-		List<Map<String, String>> memInGroupName = groupTabService.memInGroupName(memInGroup);
+		List<Map<String,String>> memInGroupName = groupTabService.memInGroupName(memInGroup);
 		Long memInGroupCheck = groupTabService.memInGroupCheck(memInGroup);
 		List<Gathering> gatheringList = gatheringService.ga_selectByGseqS(gseq); //정모 목록 가져오기 (대현추가)
 		Long gatheringCountInGroup = groupTabService.gatheringCountInGroup(gseq);
-		log.info("#log.info"+groupInfo);
-		log.warn("#log.warn"+groupMemberCount);
-		log.fatal("#log.fatal"+memInGroupCheck);
+
 		ModelAndView mv = new ModelAndView("groupTab/groupInfo", "groupInfo", groupInfo);
 		mv.addObject("groupMemberCount", groupMemberCount);
 		mv.addObject("groupMemberName", groupMemberName);
-		mv.addObject("memInGroupCheck", memInGroupCheck);
-		mv.addObject("memInGroupName", memInGroupName);
+		mv.addObject("memInGroupCheck",memInGroupCheck);
+		mv.addObject("memInGroupName",memInGroupName);
 		mv.addObject("gatheringList", gatheringList);//정모 목록 가져오기 (대현추가)
 		mv.addObject("gatheringCountInGroup", gatheringCountInGroup);//모임info 정모갯수(대현추가)
 
+		List<String> gatheringDate = new ArrayList<>();
+		List<String> gatheringTime = new ArrayList<>();
+		List<Gathering> endTimeGathering = new ArrayList<>();
+
+		Member m = (Member)session.getAttribute("m");
+		HashMap<String,Object> map = new HashMap<>();
+		map.put("mnum",m.getMnum());
+		map.put("gseq",groupInfo.getGseq());
+		List<HashMap<String,Object>> endTime = groupTabService.endTime(map);
+		System.out.println("endTime: "+endTime);
+		if(endTime.size()!=0) {
+			for(int i =0;i<endTime.size();i++) {
+				gatheringDate.add((String)endTime.get(i).get("GA_DATE"));
+				gatheringTime.add((String)endTime.get(i).get("TIME"));
+			}
+			String todayfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:00").format(new Date(System.currentTimeMillis()));
+			//yyyy-MM-dd 포맷 설정
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:00");
+			for(int i=0;i<gatheringDate.size();i++) {
+				String dday=gatheringDate.get(i);
+				String ttime = gatheringTime.get(i);
+				dday+= " "+ttime+":00";
+				//비교할 date와 today를데이터 포맷으로 변경
+				Date date = new Date(dateFormat.parse(dday).getTime());
+				Date today = new Date(dateFormat.parse(todayfm).getTime());
+				//compareTo메서드를 통한 날짜비교
+				int compare = date.compareTo(today);
+				int index=dday.indexOf(" ");
+				dday = dday.substring(0, index);
+				//조건문
+				if( 0<=compare) {
+					endTimeGathering=groupTabService.endTimeGathring(dday);
+					System.out.println("date가 today보다 큽니다.(date > today)");
+				}else if(compare < 0) {
+					groupTabService.gatheringDelete(dday);
+					System.out.println("today가 date보다 큽니다.(date < today)");
+				}
+			}
+			if(endTimeGathering.size()!=0) {
+				String memberName = groupTabService.endTimeName(endTimeGathering.get(0).getGseq());
+				MemInGathering mig = new MemInGathering();
+				mig.setGa_seq(endTimeGathering.get(0).getGa_seq());
+				mig.setMnum(m.getMnum());
+				MemInGathering notice = groupTabService.endTimeNotice(mig);
+				mv.addObject("endTimeGathering", endTimeGathering.get(0));
+				mv.addObject("name", memberName);
+				mv.addObject("notice", notice);
+				mv.addObject("gatheringName",endTimeGathering.get(0).getGa_name());
+			}else {
+				MemInGathering notice =new MemInGathering();
+				notice.setGa_seq(0);
+				notice.setNotice(1);
+				mv.addObject("notice", notice);
+				System.out.println("notice: "+notice);
+			}
+		}else {
+			MemInGathering notice =new MemInGathering();
+			notice.setGa_seq(0);
+			notice.setNotice(1);
+			mv.addObject("notice", notice);
+			System.out.println("notice: "+notice);
+		}
 		return mv;
 	}
 
 	@GetMapping("groupCreate.do")
-	public String groupCreate() {
-		return "groupTab/groupCreate";
+	public ModelAndView groupCreate() {
+		List<Category> firstCategory = memberService.firstCategory();
+		ModelAndView mv = new ModelAndView("groupTab/groupCreate","firstCategory",firstCategory);
+		return mv;
 	}
-
 	@PostMapping("groupCreate.do")
 	public String groupCreate(GroupTab groupTab, HttpSession session) {
 		String fname = null;
@@ -336,12 +413,13 @@ public class GroupTabController {
 		Integer count = groupTabService.writerCheck(groupTabGallery);
 		return count;
 	}
+
 	
 	@GetMapping("galleryDelete.do")
 	public String galleryDelte(IndexCriteria cri, long gseq, GroupTabGallery groupTabGallery, HttpServletRequest request, long mnum) {
-		System.out.println("#galleryDelete(1): "+ groupTabGallery);
+		log.info("#galleryDelete(1): "+ groupTabGallery);
 		groupTabService.galleryDelete(groupTabGallery); 
-		System.out.println("#galleryDelete(2): "+ groupTabGallery);
+		log.info("#galleryDelete(2): "+ groupTabGallery);
 		return "redirect:groupGallery.do?page="+cri.getPage()+"&pageSize="+cri.getPageSize()+"&gseq="+gseq+"&mnum="+mnum;
 	}
 }

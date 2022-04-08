@@ -4,19 +4,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import team1.togather.domain.*;
+import team1.togather.domain.Gathering;
+import team1.togather.domain.GroupTab;
+import team1.togather.domain.GroupTabGallery;
+import team1.togather.domain.IndexCriteria;
+import team1.togather.domain.MemInGathering;
+import team1.togather.domain.MemInGroup;
+import team1.togather.domain.Member;
 
 public interface GroupTabService {
 	List<GroupTab> selectAllS(IndexCriteria cri);//로그인안했을때 리스트
 	List<GroupTab> loginGroupList(Map<String,Object> map);//로그인했을때 그룹리스트
 	public Integer pageCount(Member member); //로그인했을때 그멤버의 카테고리로 검색한 그룹의 총 갯수
 	public Integer notCategorypageCount();//로그인했는데 카테고리에 관한글 없을때 모든그룹 갯수
+	List<String> groupMemberNames(Map<String,Object> map);//로그인했을때 모임장이름
+
 	GroupTab selectByGSeqS(long gseq);
 	void insertS(GroupTab groupTab);
 	void updateS(GroupTab groupTab);
 	void deleteS(long gseq);
 	//03.16 지수 추가
-	List<Member> selectAllname();
+	List<String> selectAllname(long mnum);//마이그룹 이름
 	long groupCount();
 	Long groupMemberCount(long gseq);
 	Member groupInfoMemberName(long gseq);
@@ -36,6 +44,14 @@ public interface GroupTabService {
 	//03.26 대현 추가
 	void quitGroupDeleteGathering(long mnum);//모임 탈퇴시 만들어둔 정모 모두 삭제
 	Long gatheringCountInGroup(long gseq);//만들어진 정모 갯수
+	//
+	List<HashMap<String,Object>> endTime(HashMap<String,Object> map);
+	List<Gathering> endTimeGathring(String ga_date);
+	String endTimeName(long gseq);
+	void gatheringDelete(String ga_date);
+	MemInGathering endTimeNotice(MemInGathering mig);
+	void endTimeNoticeChange(MemInGathering mig);
+
 	//04.05
 	void galleryUpload(GroupTabGallery groupTabGallery);
 	List<GroupTabGallery> selectPhoto(HashMap<String, Object> map);

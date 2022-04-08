@@ -89,7 +89,7 @@
   						if(this.content==null){
   							console.log("contentnull");
   							this.content=" ";
-  						}
+  						} 
   						$("#outerreplyform").append(
   								"<div id=\"middleform\" class=\"media-grid\">"
   								+"<div class=\"media\">"
@@ -99,7 +99,7 @@
   		  						+"<h5>"+this.mname+"</h5>"
   		  						+"<ul class=\"p-0 comment\">"
   		  							+"<li>"+this.rdate+"</li>"
-  		  							+"<li onclick=\"setR_like(this)\"><a><i class=\"bi bi-hand-thumbs-up\" aria-hidden=\"true\"></i>"+this.r_like+" 좋아요</a>"
+  		  							+"<li onclick=\"setR_like(this)\"><p>"+this.r_like+"</p><a><i class=\"bi bi-hand-thumbs-up\" aria-hidden=\"true\"></i>좋아요</a>"
   		  							+"<div class=\"hiddenrseq\" style=\"display:none\">"+this.rseq+"</div><li></ul>"
   		  						+"<p>"+this.content+"</p>"
   		  						+"</div></div></div>" 

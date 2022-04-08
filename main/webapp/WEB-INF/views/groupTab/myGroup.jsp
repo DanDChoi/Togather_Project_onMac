@@ -150,7 +150,7 @@
 	                        class="img-fluid"
 	                        alt=""
 	                      />
-	                      <span>${namelist[status.index].mname}</span>
+	                      <span>${namelist[status.index]}</span>
 	                    </div>
 	                    <div class="trainer-rank d-flex align-items-center">
 	                      <i class="bx bx-user"></i>&nbsp;${groupMemberCount[status.index]} &nbsp;&nbsp;
