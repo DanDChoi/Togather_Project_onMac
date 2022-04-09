@@ -1,1 +1,9 @@
 .DS_Store
+
+main/webapp/WEB-INF/spring/root-context.xml
+main/resources/application.properties
+main/resources/log4jdbc.log4j2.properties
+main/resources/logback.xml
+main/webapp/META-INF
+main/java/team1/togather/fileset/Path.java
+main/java/team1/togather/fileset/GBPath.java
