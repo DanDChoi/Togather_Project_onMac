@@ -460,6 +460,6 @@ public class GatheringController {
 //		}
 //		return ga_seq;
 //	}
-//	
+//	github 팀프로젝트 test
 
 }
