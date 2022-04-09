@@ -7,3 +7,6 @@ main/resources/logback.xml
 main/webapp/META-INF
 main/java/team1/togather/fileset/Path.java
 main/java/team1/togather/fileset/GBPath.java
+main/webapp/WEB-INF/classes
+main/webapp/WEB-INF/spring
+main/webapp/WEB-INF/web.xml
