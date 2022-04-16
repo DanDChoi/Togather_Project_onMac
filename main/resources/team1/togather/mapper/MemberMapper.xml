@@ -57,7 +57,9 @@
 									 #{category_first},
 									 #{category_second,jdbcType=VARCHAR},
 									 #{category_third,jdbcType=VARCHAR},
-									 default)
+									 default,
+		                          	#{sessionkey,jdbcType=VARCHAR},
+		                          	#{sessionlimit,jdbcType=TIMESTAMP})
 	</insert>
 	<!-- 메세지 보내기 -->
 	<insert id="sendMessage" parameterType="Message" >
@@ -119,9 +121,21 @@
 	<select id="secondCategory" resultType="Category">
 		select DISTINCT INT_IN from category where int_out=#{int_out}
 	</select>
+	<resultMap id="thirdCategoryMap" type="Category">
+		<result column="INT_IN" property="int_in" />
+		<result column="FIRST_OPTION" property="first_option" />
+	</resultMap>
 	<!-- 회원가입 세번째 카테고리 리스트 가져오기 -->
-	<select id="thirdCategory" resultType="Category">
+	<select id="thirdCategory" resultMap="thirdCategoryMap">
 		select DISTINCT FIRST_OPTION from category where INT_IN=#{int_in}
+	</select>
+	<!-- 로그인유지하기 누르기 체크 -->
+	<update id="keepLogin" parameterType="Map">
+		update member set sessionKey=#{sessionId},sessionLimit=#{sessionLimit} where mnum=#{mnum}
+	</update>
+	<!-- 자동로그인을 누른 상태 유저 찾기 -->
+	<select id="checkUserWithSessionKey" resultType="Member" parameterType="String">
+		select * from member where sessionKey =#{sessionKey}  and sessionLimit > SYSDATE
 	</select>
 
 </mapper>

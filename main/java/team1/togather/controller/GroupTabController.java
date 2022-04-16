@@ -89,6 +89,7 @@ public class GroupTabController {
 		mv.addObject("gatheringCountInGroup", gatheringCountInGroup);//모임info 정모갯수(대현추가)
 		mv.addObject("memberInfo", memberInfo);
 		mv.addObject("grade", grade);
+		log.warn("#groupInfo.do (grade): "+grade);
 
 		List<String> gatheringDate = new ArrayList<>();
 		List<String> gatheringTime = new ArrayList<>();
@@ -216,11 +217,15 @@ public class GroupTabController {
 	public Long groupDeletecheck(MemInGroup memInGroup) {
 		//0=모임장 1=운영진 2=일반
 		Long grade = groupTabService.grade(memInGroup);
-		if (grade == null) {//가입안한 사람
-			grade = (long) 3;
+		if(grade ==null) {//가입안한 사람
+			grade=(long) 3;
 			return grade;
-		} else {
-			return grade;
+		}else {
+			if(grade==0 || grade ==1) {//모임장이거나 운영자
+				return grade;
+			}else {//일반회원
+				return grade;
+			}
 		}
 	}
 
@@ -313,15 +318,20 @@ public class GroupTabController {
 		}
 	}
 
-	//04.04범수추가
+	//04.11범수수정(그룹멤버체크)
 	@PostMapping("groupMembercheck")
 	@ResponseBody
 	public Long groupMembercheck(MemInGroup memInGroup) {
 		Long grade = groupTabService.grade(memInGroup);
-		if (grade == null) {
-			return (long) 3;
-		} else {
+		if(grade ==null) {//가입안한 사람
+			grade=(long) 3;
 			return grade;
+		}else {
+			if(grade==0 || grade ==1) {//모임장이거나 운영자
+				return grade;
+			}else {//일반회원
+				return grade;
+			}
 		}
 	}
 
@@ -330,10 +340,15 @@ public class GroupTabController {
 	@ResponseBody
 	public Long galleryCheck(MemInGroup memInGroup) {
 		Long grade = groupTabService.grade(memInGroup);
-		if (grade == null) {
-			return (long) 3;
-		} else {
+		if(grade ==null) {//가입안한 사람
+			grade=(long) 3;
 			return grade;
+		}else {
+			if(grade==0 || grade ==1) {//모임장이거나 운영자
+				return grade;
+			}else {//일반회원
+				return grade;
+			}
 		}
 	}
 
@@ -398,9 +413,9 @@ public class GroupTabController {
 			groupTabGallery.setPname(galleryFNname);
 		}
 		System.out.println("#groupTabGallery(sout): "+ groupTabGallery);
-		log.trace("#groupTabGallery(log): "+ groupTabGallery);
 		groupTabGallery.setGrade(Math.toIntExact(grade));
 		groupTabService.galleryUpload(groupTabGallery);
+		log.info("#groupTabGallery(log): "+ groupTabGallery);
 		return "1";
 	}
 	
@@ -476,7 +491,6 @@ public class GroupTabController {
 			}
 		}
 	}
-
 	@PostMapping("kingQuitCheck")
 	@ResponseBody
 	public long kingQuitCheck(MemInGroup memInGroup) {
@@ -487,6 +501,13 @@ public class GroupTabController {
 		}else {
 			return 1;
 		}
+	}
+	//0415 지수추가 채팅
+	@GetMapping("chat")
+	public ModelAndView chat(long gseq,String gname) {
+		ModelAndView mv = new ModelAndView("groupTab/chat", "gseq", gseq);
+		mv.addObject("gname", gname);
+		return mv;
 	}
 }
 
